@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "../../EICEG-16X16"
+		},
+		{
+			"name": "EICEG96",
+			"path": ".."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"random": "cpp",
+			"array": "cpp",
+			"string_view": "cpp",
+			"initializer_list": "cpp",
+			"utility": "cpp"
+		}
+	}
+}

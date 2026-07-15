@@ -1,0 +1,111 @@
+<!--pages/sensor/sensor.wxml-->
+<navigation-bar title="传感器"></navigation-bar>
+<!-- 实时数据页 -->
+<view class="container">
+
+<!-- 设备选择器 -->
+<view class="device-selector" bindtap="showDeviceSelector">
+  <view class="selector-content">
+    <!-- <t-icon name="server" size="48rpx" class="device-img" /> -->
+    <text class="device-name">{{selectedDevice ? (selectedDevice.mac_address_name ? selectedDevice.mac_address_name : '请选择设备') : '请选择设备'}}</text>
+    <!-- <t-icon name="chevron-down" size="32rpx" class="selector-arrow" /> -->
+  </view>
+</view>
+
+<scroll-view scroll-y style="height: 70vh;">
+<!-- 实时数据卡片 -->
+<view class="realtime-section">
+  <view class="section-title">实时数据</view>
+  <view class="data-grid">
+    <view class="data-item">
+      <text class="data-label">AQI</text>
+      <text class="data-value">{{realtimeData.aqi}}</text>
+      <text class="data-unit">级</text>
+    </view>
+    <view class="data-item">
+      <text class="data-label">TVOC</text>
+      <text class="data-value">{{realtimeData.tvoc}}</text>
+      <text class="data-unit">ppb</text>
+    </view>
+    <view class="data-item">
+      <text class="data-label">eCO₂</text>
+      <text class="data-value">{{realtimeData.eco2}}</text>
+      <text class="data-unit">ppm</text>
+    </view>
+    <view class="data-item">
+      <text class="data-label">温度</text>
+      <text class="data-value">{{realtimeData.temperature}}</text>
+      <text class="data-unit">°C</text>
+    </view>
+    <view class="data-item">
+      <text class="data-label">湿度</text>
+      <text class="data-value">{{realtimeData.humidity}}</text>
+      <text class="data-unit">%</text>
+    </view>
+  </view>
+</view>
+
+<!-- 实时曲线图 -->
+<view class="charts-section">
+  <view class="section-title">实时曲线</view>
+  <block wx:for="{{charts}}" wx:key="id" wx:for-item="chart">
+    <view class="chart-container">
+      <view class="chart-header">
+        <text class="chart-name">{{chart.name}}</text>
+        <text class="chart-unit">{{chart.unit}}</text>
+      </view>
+      <view class="chart-wrapper">
+        <qiun-wx-ucharts
+          type="line"
+          opts="{{chart.opts}}"
+          chartData="{{chart.chartData}}"
+          canvas2d="{{true}}"
+          canvasId="{{chart.id}}"
+        />
+      </view>
+    </view>
+  </block>
+</view>
+
+</scroll-view>
+
+<!-- 刷新按钮 -->
+<view class="refresh-btn" bindtap="onRefresh">
+  <!-- 临时移除未注册组件，避免影响渲染 -->
+  <!-- <t-icon name="refresh" size="32rpx" /> -->
+  <text>刷新数据</text>
+</view>
+
+<!-- 设备选择弹窗 -->
+<view class="picker-mask" wx:if="{{showDevicePicker}}" bindtap="onPickerCancel">
+  <view class="picker-content" catchtap="noop">
+    <view class="picker-header">
+      <text class="picker-title">选择设备</text>
+      <!-- <t-icon name="close" size="32rpx" class="picker-close" bindtap="onPickerCancel" /> -->
+    </view>
+    <scroll-view class="device-list" scroll-y>
+      <view 
+        class="device-list-item {{index === selectedIndex ? 'active' : ''}}"
+        wx:for="{{deviceList}}"
+        wx:key="mac_address"
+        bindtap="onDeviceChange"
+        data-index="{{index}}"
+      >
+        <!-- 使用已有的尺寸样式，确保可见 -->
+        <view class="device-list-img" style="background:#3b82f6;"></view>
+        <!-- <t-icon name="server" size="48rpx" class="device-list-img" /> -->
+        <view class="device-list-info">
+          <text class="device-list-name">{{item.mac_address_name}}</text>
+          <text class="device-list-mac">{{item.mac_address}}</text>
+        </view>
+        <!-- <t-icon name="check" size="32rpx" class="device-list-check" wx:if="{{index === selectedIndex}}" /> -->
+      </view>
+    </scroll-view>
+  </view>
+</view>
+
+<!-- 加载提示 -->
+<view class="loading-mask" wx:if="{{loading}}">
+  <view class="loading-spinner"></view>
+</view>
+</view>

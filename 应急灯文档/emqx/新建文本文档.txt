@@ -1,0 +1,77 @@
+CREATE TABLE fluence (
+	id String AUTO_INCREMENT PRIMARY KEY,
+	AQI int NOT NULL,
+	TVOC int NOT NULL,
+	ECO2 int NULL,
+	temp float NOT NULL,
+	hum float NOT NULL,
+	electricity_Current bool NOT NULL,
+	electricity_data int NOT NULL,
+	ESP32_fires_flag bool NOT NULL,
+	ESP32_electricity_flag bool NOT NULL,
+	buzzer_flag int NOT NULL,
+	Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+from flask import Flask, json, request
+
+api = Flask(__name__)
+
+@api.route('/', methods=['POST'])
+def print_messages():
+  message = request.get_json()
+  mac_address = list(message.keys())[0]
+  payload = message.get(mac_address)
+  print("AQI:", payload.get('AQI'))
+  reply= {"result": "ok", "message": "success"}
+  return json.dumps(reply), 200
+
+if __name__ == '__main__':
+  api.run()
+
+from flask import Flask, json, request
+
+app = Flask(__name__)
+@app.route('/receiveData', methods=['PosT'])
+def print messages():
+  message = reguest.get json()
+  print(payload['temperature"], payload[ "soil humidity'], payload['light'])
+  print(message['username"])
+  reply= {"result":"ok""message": "success"]
+  return json.dumps(reply)，200
+
+if __name__ == '__main__':
+  app.run('0.0.0.0'8000)
+
+
+from flask import Flask, json, request
+
+app = Flask(__name__)
+
+@app.route('/receiveData/<mac>',  methods=['POST'])  
+def handle_data(mac):  
+    data = request.get_json()   
+    print(f"MAC: {mac}, 数据: {data}")  
+    # 存储逻辑（示例）  
+    db.insert({'mac':  mac, 'temp': data['temp'], 'ts': time.time()})   
+    return jsonify({"status": "received"}), 200  
+
+if __name__ == '__main__':
+  app.run('0.0.0.0',8000)
+
+curl -X POST http://172.17.136.236:8000/receiveData \
+  -H "Content-Type: application/json" \
+  -d '{"mac": "d8bc3878215c","AQI": 1 ,"TVOC": 0 ,"ECO2": 400 ,"temp": 27.60 ,"hum": 52.88 ,"electricity_Current": 1 ,"electricity": 1102 ,"ESP32_fires_flag": 0 ,"ESP32_electricity_flag": 0 ,"buzzer": 1}'
+
+from flask import Flask, json, request
+
+api = Flask(__name__)
+
+@api.route('/receiveData', methods=['POST'])
+def print_messages():
+  print("got post request: ", request.get_data())
+  reply= {"result": "ok", "message": "success"}
+  return json.dumps(reply), 200
+
+if __name__ == '__main__':
+  api.run('0.0.0.0',8000)

@@ -1,0 +1,283 @@
+/* 实时数据页样式 */
+.container {
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding-bottom: 100rpx;
+}
+
+/* 设备选择器 */
+.device-selector {
+  background: #fff;
+  margin: 20rpx;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.selector-content {
+  display: flex;
+  align-items: center;
+}
+
+.device-img {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 12rpx;
+  margin-right: 20rpx;
+}
+
+.device-name {
+  flex: 1;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.selector-arrow {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 实时数据区 */
+.realtime-section {
+  background: #fff;
+  margin: 20rpx;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 30rpx;
+}
+
+.data-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20rpx;
+}
+
+.data-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30rpx 20rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12rpx;
+  color: #fff;
+}
+
+.data-label {
+  font-size: 24rpx;
+  opacity: 0.9;
+  margin-bottom: 10rpx;
+}
+
+.data-value {
+  font-size: 40rpx;
+  font-weight: bold;
+  margin: 10rpx 0;
+}
+
+.data-unit {
+  font-size: 20rpx;
+  opacity: 0.8;
+}
+
+/* 刷新按钮 */
+.refresh-btn {
+  position: fixed;
+  bottom: 40rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  padding: 24rpx 60rpx;
+  border-radius: 50rpx;
+  font-size: 28rpx;
+  box-shadow: 0 8rpx 20rpx rgba(102, 126, 234, 0.4);
+}
+
+.refresh-btn:active {
+  opacity: 0.8;
+  transform: translateX(-50%) scale(0.95);
+}
+
+/* 设备选择弹窗 */
+.picker-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  align-items: flex-end;
+}
+
+.picker-content {
+  width: 100%;
+  max-height: 80vh;
+  background: #fff;
+  border-radius: 32rpx 32rpx 0 0;
+  overflow: hidden;
+  /* 兜底文本颜色，防止被继承为白色导致看不到 */
+  color: #333 !important;
+}
+
+.picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.picker-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.picker-close {
+  font-size: 40rpx;
+  color: #999;
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.device-list {
+  /* scroll-view 建议固定高度，避免在某些渲染下不显示内容 */
+  height: 60vh;
+}
+
+.device-list-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx 40rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+  transition: background 0.3s;
+}
+
+.device-list-item:active {
+  background: #f8f9fa;
+}
+
+.device-list-item.active {
+  background: #f0f4ff;
+}
+
+.device-list-img {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 12rpx;
+  margin-right: 20rpx;
+}
+
+.device-list-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.device-list-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333 !important;
+  margin-bottom: 8rpx;
+}
+
+.device-list-mac {
+  font-size: 24rpx;
+  color: #999 !important;
+}
+
+.device-list-check {
+  font-size: 40rpx;
+  color: #667eea;
+}
+
+/* 在 Skyline 下，text 有时不继承父级颜色，这里强制指定 */
+.picker-content text {
+  color: #333 !important;
+}
+
+/* 加载遮罩 */
+.loading-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loading-spinner {
+  width: 80rpx;
+  height: 80rpx;
+  border: 6rpx solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 图表区域 */
+.charts-section {
+  background: #fff;
+  margin: 20rpx;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.chart-container {
+  margin-bottom: 40rpx;
+}
+
+.chart-container:last-child {
+  margin-bottom: 0;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding: 0 10rpx;
+}
+
+.chart-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.chart-unit {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.chart-wrapper {
+  width: 100%;
+  height: 300px;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  overflow: hidden;
+}

@@ -1,0 +1,12 @@
+{
+ 
+  "backgroundTextStyle": "light",
+  "navigationBarTitleText": "Mini空气质量检测仪",
+  "navigationBarTextStyle": "white",
+   
+    "usingComponents": {
+      "ec-canvas": "/ec-canvas/ec-canvas"
+    }
+    ,
+    "navigationBarBackgroundColor": "#3a3a3a"
+  }

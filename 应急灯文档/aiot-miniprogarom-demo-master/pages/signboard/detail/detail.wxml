@@ -1,0 +1,110 @@
+<!--pages/signboard/detail/detail.wxml-->
+
+<navigation-bar title="{{isEdit ? '编辑设备' : '添加设备'}}" showBack="{{true}}" />
+<view class="container">
+  <!-- 表单区域 -->
+  <scroll-view class="form-container" scroll-y >
+  
+  <!-- <view class="form-container"> -->
+    <!-- MAC地址 -->
+    <view class="form-item">
+      <text class="form-label">MAC地址 *</text>
+      <input 
+        class="form-input"
+        type="text"
+        placeholder="请输入MAC地址"
+        value="{{formData.mac_address}}"
+        data-field="mac_address"
+        bindinput="onInputChange"
+        disabled="{{isEdit}}"
+      />
+    </view>
+
+    <!-- 方向选择 -->
+    <view class="form-item">
+      <text class="form-label">方向</text>
+      <picker 
+        mode="selector"
+        range="{{displayOptions}}"
+        range-key="label"
+        value="{{formData.display - 1}}"
+        bindchange="onPickerChange"
+      >
+        <view class="form-picker">
+          <text>{{displayOptions[formData.display - 1].label}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 占空比 -->
+    <view class="form-item">
+      <text class="form-label">占空比 (1-1024)</text>
+      <view class="slider-container">
+        <slider 
+          min="1"
+          max="1024"
+          value="{{formData.duty_cycle}}"
+          data-field="duty_cycle"
+          bindchange="onSliderChange"
+          activeColor="#667eea"
+          block-size="20"
+        />
+        <text class="slider-value">{{formData.duty_cycle}}</text>
+      </view>
+    </view>
+
+    <!-- 亮度 -->
+    <view class="form-item">
+      <text class="form-label">亮度 (0-100%)</text>
+      <view class="slider-container">
+        <slider 
+          min="0"
+          max="100"
+          value="{{formData.brightness}}"
+          data-field="brightness"
+          bindchange="onSliderChange"
+          activeColor="#667eea"
+          block-size="20"
+        />
+        <text class="slider-value">{{formData.brightness}}%</text>
+      </view>
+    </view>
+
+    <!-- 安装地址 -->
+    <view class="form-item">
+      <text class="form-label">安装地址</text>
+      <textarea 
+        class="form-textarea"
+        placeholder="请输入设备安装地址"
+        value="{{formData.address}}"
+        data-field="address"
+        bindinput="onInputChange"
+        maxlength="500"
+      />
+    </view>
+
+    <!-- 备注 -->
+    <view class="form-item">
+      <text class="form-label">备注</text>
+      <textarea 
+        class="form-textarea"
+        placeholder="请输入备注信息"
+        value="{{formData.remark}}"
+        data-field="remark"
+        bindinput="onInputChange"
+      />
+    </view>
+  <!-- </view> -->
+</scroll-view>
+
+  <!-- 保存按钮 -->
+  <view class="save-btn" bindtap="saveDevice">
+    <text>{{isEdit ? '保存修改' : '添加设备'}}</text>
+  </view>
+
+  <!-- 加载提示 -->
+  <view class="loading-mask" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+  </view>
+</view>

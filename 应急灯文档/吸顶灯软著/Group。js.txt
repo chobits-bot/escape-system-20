@@ -1,0 +1,972 @@
+import * as echarts from '../../ec-canvas/echarts';
+
+Page({
+  /**
+   * 页面的初始数据
+   */
+
+
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function (options) {
+    var _this = this;
+    this.getOption();
+    this.setData({                    //每隔10s刷新一次
+      timer: setInterval(function () {
+        _this.getOption();
+    }, 100)
+    })
+  },
+
+  /**
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady: function () {
+    this.oneComponent = this.selectComponent('#mychart-dom-bar');
+ 
+  },
+  onUnload: function () {
+    clearInterval(this.data.timer)
+},
+
+  init_chart: function (xdata, ydata) {           //初始化第一个图表
+    this.oneComponent.init((canvas, width, height, dpr) => {
+        const chart = echarts.init(canvas, null, {
+            width: width,
+            height: height,
+            devicePixelRatio: dpr // new
+        });
+        line_set(chart, xdata, ydata)
+        this.chart = chart;
+        return chart;
+    });
+},
+
+
+  data: {
+    ec: {
+      onInit: initChart
+    },
+    Light: 0,
+    LightLevel: 0,    
+    Temperature_Light:37.6,
+    Humidity_Light: 49.7,
+    CO2_Light: 424,
+    TVOC_Light: 35, 
+    PM2_Light: 1,
+    AIRlevel_Light: 1,
+
+    Temperature_Mini:37.4,
+    Humidity_Mini: 42.6,
+    HCHO_Mini: 0.01,
+    TVOC_Mini: 44.04,
+    AIRlevel_Min: 1,
+    Cell_Mini: 20,
+
+    HCHO_Sixto1: 38.15,
+    TVOC_Sixto1: 70.1,
+    Temperature_Sixto1: 35.3,
+    Humidity_Sixto1: 45.31,
+    AIRlevel_Sixto1: 1,
+    Cell_Sixto1: 20,
+    isFrist:0,
+  },  
+
+  getOption: function () {        
+  var _this = this;
+        let light_temperature = this.data.Temperature_Light; 
+        var temperature=[];
+        var date=[];
+        for (var i = 0; i < 10; ++i) {
+             temperature[i]=light_temperature;
+            date[i]=res.data.date;
+            
+         }
+        _this.init_chart(date,temperature)           
+      },   
+    
+
+  onShareAppMessage: function (res) {
+    return {
+      title: 'ECharts 可以在微信小程序中使用啦！',
+      path: '/pages/index/index',
+      success: function () { },
+      fail: function () { }
+    }
+  },
+
+  onReady() {
+    setTimeout(function () {
+      // 获取 chart 实例的方式
+      // console.log(chart)
+    }, 2000);
+  },
+
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  async onLoad() {
+    wx.showToast({
+      title: '等待',
+      icon:"loading"
+
+    })
+
+    
+
+
+    let that = this;
+    //创建websocket,需要域名、ssl证书
+    client = mqtt.connect('wx://124.220.31.151:8083/mqtt',options)
+    client.on('connect', function () {
+      console.log('连接服务器成功')
+      //修改订阅主题
+      client.subscribe('ESP32toplight/#', function (err) {
+        if (!err) {
+           console.log('订阅成功！');
+        }
+      })
+    })
+	//接收消息监听
+  client.on('message', function (topic, message) {
+      // message is Buffer
+      let msg = message.toString();
+      console.log('收到消息：'+msg);
+      //解析json数据
+      //console.log(typeof msg)
+      try{
+        let temp  =JSON.parse(msg);
+        that.setData({
+          data: temp ,                //将所有数据存储到data
+          //由于微信小程序的局限性，无法同步data.(mqValue).()和（mqValue）.（）的值，所以手动更新
+          //toFixed为了只让数据显示小数点后一位
+          //吸顶疼
+          Temperature_Light:temp.Temperature_Light.toFixed(1),
+          Humidity_Light:temp.Humidity_Light.toFixed(1),
+          Light:temp.Light,
+          LightLevel:temp.LightLevel,
+          //Mini
+          Temperature_Mini:temp.Temperature_Mini.toFixed(1),
+          //SixTo1
+          Temperature_Sixto1:temp.Temperature_Sixto1.toFixed(1),
+        });
+      }
+      catch(err){
+       console.log("++a")
+      }
+      
+    if(that.data.isFrist == 0){
+that.setData({
+  isFrist:1,
+})
+    }
+
+     //console.log(that.data.isFrist)
+      if(that.data.isFrist == 1){
+        wx.showToast({
+          title: '加载成功',
+          icon:"success"
+        })
+        that.setData({
+          isFrist:3
+        })
+      }
+     //关闭连接 client.end()
+    })
+  
+  },
+
+  /**
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady() {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow() {
+    if (typeof this.getTabBar === 'function' &&
+    this.getTabBar()) {
+    this.getTabBar().setData({
+      selected: 0
+    })
+  }
+  },
+
+  /**
+   * 生命周期函数--监听页面隐藏
+   */
+  onHide() {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面卸载
+   */
+  onUnload() {
+
+  },
+
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh() {
+
+  },
+
+  /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom() {
+
+  },
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage() {
+
+  },
+
+  onLightChange: function(event) {
+    //var that = this
+    // 要发布的主题
+    let topicdown = `ESP32topsub/public`
+    let lightoff = `0`
+    let lighton  = `1`
+    let light_level = 1000; //开灯默认是最大亮度
+    let light_New = this.data.Light;  //获取目前灯的开关状态 
+    var light_f = '{"Light":'
+    var light_b = '"LightLevel":'
+    console.log(light_New);
+    if (light_New == '1') {
+      client.publish(topicdown,light_f+lightoff+","+light_b+lightoff+"}", function (err) {
+        if (!err) {
+          console.log('成功下发命令 关灯!');
+        }
+      })
+    } else {
+     
+      // "LightLevel":"+lighton+"}
+      client.publish(topicdown,light_f+lighton+","+light_b+light_level+"}", function (err) {
+        if (!err) {
+          console.log('成功下发命令 开灯!');
+
+        }
+      })
+    }
+  },
+
+  onLightSwitch: function(event) {
+    //var that = this
+    // 要发布的主题
+    let topicdown = `ESP32topsub/public`
+    let lightoff = `0`
+    let lighton  = `1`
+    let light_level = 1000; //开灯默认是最大亮度
+    let light_New = this.data.Light;  //获取目前灯的开关状态 
+    var light_f = '{"Light":'
+    var light_b = '"LightLevel":'
+    var checkedValue = event.detail.value;  //获取当前开关状态
+    console.log(checkedValue);  //打印开关状态
+    if (light_New == '1') {
+      client.publish(topicdown,light_f+lightoff+","+light_b+lightoff+"}", function (err) {
+        if (!err) {
+          console.log('成功下发命令 关灯!');
+        }
+      })
+    } else {
+     
+      // "LightLevel":"+lighton+"}
+      client.publish(topicdown,light_f+lighton+","+light_b+light_level+"}", function (err) {
+        if (!err) {
+          console.log('成功下发命令 开灯!');
+
+        }
+      })
+    }
+  },
+
+  // onLightChange: function(event) {
+  //   //var that = this
+  //   // 要发布的主题
+  //   let topicdown = `sub`
+  //   let lightoff = `0`
+  //   let lighton  = `1`
+    
+
+  //   if (this.data.mqValue.Light == '1') {
+  //     client.publish(topicdown,lightoff, function (err) {
+  //       if (!err) {
+  //         console.log('成功下发命令 关灯!');
+  //       }
+  //     })
+  //   } else {
+  //     client.publish(topicdown,lighton, function (err) {
+  //       if (!err) {
+  //         console.log('成功下发命令 开灯!');
+  //       }
+  //     })
+  //   }
+  // },
+
+  //---------备份
+  // let water = `0`,
+  // onLightChange: function(event) {
+  //   //var that = this
+  //   console.log(event.detail)
+  //   let sw = event.detail.value
+  //   // 要发布的主题
+  //   let topicdown = `sub`
+  //   let lightoff = `0`
+  //   let lighton  = `1`
+
+  //   if (sw==0) {
+  //     client.publish(topicdown, lightoff, function (err) {
+  //       if (!err) {
+  //         console.log('成功下发命令 关灯!');
+  //       }
+  //     })
+  //   } else {
+  //     client.publish(topicdown,lighton, function (err) {
+  //       if (!err) {
+  //         console.log('成功下发命令 开灯!');
+  //       }
+  //     })
+  //   }
+  // },
+
+
+  SliderLight_Change(e) {
+       //var that = this
+    // 要发布的主题
+    let topicdown = `ESP32topsub/public`
+    let lightoff = `0`
+    let lighton  = `1`
+    // LightLevel:e.detail.value;  //更新灯亮度数据
+    let light_level = e.detail.value; //获取目前灯亮度状态
+    let light_New = this.data.Light;  //获取目前灯的开关状态 
+    var light_f = '{"Light":'
+    var light_b = '"LightLevel":'
+    if (light_New == '1') {
+      client.publish(topicdown,light_f+lighton+","+light_b+light_level+"}", function (err) {
+        if (!err) {
+          console.log('成功下发命令 调光!');
+        }
+      })
+    } else {
+      // "LightLevel":"+lighton+"}
+      client.publish(topicdown,light_f+lighton+","+light_b+light_level+"}", function (err) {
+        if (!err) {
+          console.log('灯未开启 已亮灯并且调光成功调光!');
+         }
+       })
+    }
+  },
+
+// //改变灯光亮度
+//   SliderLight_Change(e) {
+//     var t = this
+//     console.log(e.detail)
+//     let ss = e.detail.value
+//     // 要发布的主题
+//     let topicdown = `sub`
+//     //转换number-->let以便client.publish发布
+//     let num = e.detail.value
+//     let str = String(num)
+
+//     if (ss) {
+//       client.publish(topicdown,str, function (err) {
+//         if (ss) {
+//           console.log('成功下发命令 改变亮度!')
+//         }
+//       })
+//     }
+//   },
+
+
+  gotoLight: function (options) {
+
+    wx.navigateTo({
+      url: '../Group/Group', //要跳转到的页面路径
+    })
+  },
+  gotoMini: function (options) {
+
+    wx.navigateTo({
+      url: '../miniQRS/miniQRS', //要跳转到的页面路径
+    })
+  },
+  gotoSixTo1: function (options) {
+
+    wx.navigateTo({
+      url: '../SixTo1/SixTo1', //要跳转到的页面路径
+    })
+  },
+
+})
+
+
+
+let chart = null;
+
+
+
+
+
+function initChart(canvas, width, height, dpr) {
+  chart = echarts.init(canvas, null, {
+    width: width,
+    height: height,
+    devicePixelRatio: dpr // new
+
+  });
+  canvas.setChart(chart);
+//
+  const categories = (function () {
+    let now = new Date();
+    let res = [];
+    let len = 10;
+    while (len--) {
+      res.unshift(now.toLocaleTimeString().replace(/^\D*/, ''));
+      now = new Date(+now - 2000);
+    }
+    return res;
+  })();
+
+  const categories2 = (function () {
+    let res = [];
+    let len = 10;
+    while (len--) {
+      res.push(10 - len - 1);
+    }
+    return res;
+  })();
+
+  const data = (function () {
+    let res = [];
+    let len = 10;
+    while (len--) {
+      res.push(Math.random() * 10 + 5);
+      // console.log('1111'+this.Temperature_Light);
+    }
+    return res;
+  })();
+  const data2 = (function () {
+    let res = [];
+    let len = 0;
+    while (len < 10) {
+      res.push(+(Math.random() * 10 + 5).toFixed(1));
+      len++;
+    }
+    return res;
+  })();
+
+//
+
+
+  
+  var option = {
+    title: {
+      text: '温湿度数据图示',
+      backgroundColor: '#C2F628',
+      radius:'55%'
+    },
+    
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'cross',
+        label: {
+          backgroundColor: '#283b56'
+        }
+      }
+    },
+    legend: {},
+    toolbox: {
+      show: true,
+      feature: {
+        dataView: { readOnly: false },
+        restore: {},
+        saveAsImage: {}
+      }
+    },
+    dataZoom: {
+      show: false,
+      start: 0,
+      end: 100
+    },
+    legend: {
+      data: ['温度', '湿度']
+    },
+    grid: {
+      left: 20,
+      right: 20,
+      bottom: 15,
+      top: 40,
+      containLabel: true
+    },
+    xAxis: [
+      {
+        type: 'category',
+        boundaryGap: true,
+        data: categories
+      },
+      {
+        type: 'category',
+        boundaryGap: true,
+        data: categories2
+      }
+    ],
+    yAxis: [
+      {
+        type: 'value',
+        scale: true,
+        name: 'Price',
+        max: 500,
+        min: 0,
+        boundaryGap: [0.2, 0.2]
+      },
+      {
+        type: 'value',
+        scale: true,
+        name: 'Order',
+        max: 1200,
+        min: 0,
+        boundaryGap: [0.2, 0.2]
+      }
+    ],
+    series: [
+      {
+        name: 'Dynamic Bar',
+        type: 'bar',
+        xAxisIndex: 1,
+        yAxisIndex: 1,
+        data: data
+      },
+      {
+        name: 'Dynamic Line',
+        type: 'line',
+        data: data2
+      }
+    ]
+  };
+
+  app.count = 11;
+  setInterval(function () {
+    let axisData = new Date().toLocaleTimeString().replace(/^\D*/, '');
+    data.shift();
+    data.push(Math.round(Math.random() * 1000));
+    data2.shift();
+    data2.push(+(Math.random() * 10 + 5).toFixed(1));
+    categories.shift();
+    categories.push(axisData);
+    categories2.shift();
+    categories2.push(app.count++);
+    myChart.setOption({
+      xAxis: [
+        {
+          data: categories
+        },
+        {
+          data: categories2
+        }
+      ],
+      series: [
+        {
+          data: data
+        },
+        {
+          data: data2
+        }
+      ]
+    });
+  }, 2100);
+
+  chart.setOption(option);
+  return chart;
+}
+
+
+
+
+// // // // // // // // // kk
+
+
+
+
+
+// MQTT直连版本后端
+const app = getApp()
+var mqtt = require("../../utils/utils/mqtt.min")
+
+const options = {
+  connectTimeout: 3000,
+  clientId: function () {
+    return Math.random().toString(36).substr(2, 15)
+  },
+};
+const deviceConfig = {
+  deviceName: "hardware",
+};
+
+var client;
+
+
+// ChooseRight({
+//   data: {
+//     // 假设这是你的条件变量
+//     condition: true,
+//     // 定义两种情况下要显示的文本
+//     textForConditionTrue: '条件为真时的文本',
+//     textForConditionFalse: '条件为假时的文本'
+//   }
+// });
+
+//跳转路径
+
+
+
+
+
+
+
+
+
+
+
+
+
+// index.js
+// 获取应用实例
+const app1 = getApp()
+
+// Page({
+//   data: {
+//     Group: {
+//       GroupName: '实验室的智能应急灯',
+//       icon: "./img/xdd0.png",
+//       now: {
+//         TEMPER: '',
+//         co2: '',
+//         PM10: '',
+//         PM2_5: '',
+//         TVOC: '',
+//         HUD: '',
+//         CH2O: '',
+
+//         TEMPERcolor: '',
+//         co2color: '',
+//         PM10color: '',
+//         PM2_5color: '',
+//         TVOCcolor: '',
+//         co2color: '',
+//         HUDcolor: '',
+//         cCH2Ocolor: '',
+
+//       },
+//     },
+//     menber: [{
+//         data: '设备1',
+//         dc: '99'
+//       },
+//       {
+//         data: '设备2',
+//         dc: '90'
+//       },
+
+//     ]
+//   },
+//   // 事件处理函数
+//   bindViewTap() {
+//     wx.navigateTo({
+//       url: '../logs/logs'
+//     })
+//   },
+
+//     // 点击吸顶灯的事件处理函数
+//   gotoPage: function (options) {
+
+//     wx.navigateTo({
+//       url: '../Group/Group', //要跳转到的页面路径
+//     })
+//   },
+
+//   gotoPage2: function (options) {
+//     wx.navigateTo({
+//       url: '../miniQRS/miniQRS', //要跳转到的页面路径
+//     })
+//   },
+//   onLoad() {
+//     var _this=this;
+
+//     wx.cloud.init();
+//     wx.cloud.callFunction({
+//         name: 'mysql', //云函数名称
+//         data: {
+//           sb: 0,
+//         },
+//         success: function (res) {
+//           console.log(res);
+//           var GroupID = [];
+//           var Group_TEMPER = [];
+//           var Group_HUD = [];
+//           var Group_co2 = [];
+//           var Group_CH2O = [];
+//           var Group_TVOC = [];
+//           var Group_PM2_5 = [];
+//           var Group_PM10 = [];
+//           var Group_DC = [];
+//           var Group_time = [];
+//           var date = [];
+//           for (var i = 0; i < res.result.length; ++i) {
+//             const util = require('../../utils/util.js');
+//             const moment = require('../../utils/moment.min');
+//             var date = new Date(moment(res.result[i].time));
+//             Group_TEMPER[i] = parseFloat(res.result[i].temper).toFixed(2);
+//             Group_HUD[i] = parseFloat(res.result[i].hud).toFixed(2);
+//             Group_co2[i] = parseFloat(res.result[i].CO2).toFixed(2);
+//             Group_CH2O[i] = parseFloat(res.result[i].CH2O).toFixed(3);
+//             Group_TVOC[i] = parseFloat(res.result[i].TVOC).toFixed(2);
+//             Group_PM2_5[i] = parseFloat(res.result[i].PM2_5).toFixed(2);
+//             Group_PM10[i] = parseFloat(res.result[i].PM10).toFixed(2);
+//             Group_time[i] = date.getTime() - 8 * 3600 * 1000;
+  
+//             //  console.log(date);
+//           }
+//           var Temp_time = [
+//             [Group_time[0], Group_TEMPER[0]]
+//           ];
+//           var HUD_time = [
+//             [Group_time[0], Group_HUD[0]]
+//           ];
+//           var CO2_time = [
+//             [Group_time[0], Group_co2[0]]
+//           ];
+//           var CH2O_time = [
+//             [Group_time[0], Group_CH2O[0]]
+//           ];
+//           var TVOC_time = [
+//             [Group_time[0], Group_TVOC[0]]
+//           ];
+//           var PM25_time = [
+//             [Group_time[0], Group_PM2_5[0]]
+//           ];
+//           var PM10_time = [
+//             [Group_time[0], Group_PM10[0]]
+//           ];
+
+//           for (var i = 0; i < Group_time.length; ++i) {
+//             Temp_time.push([Group_time[i], Group_TEMPER[i]]);
+//             HUD_time.push([Group_time[i], Group_HUD[i]]);
+//             CO2_time.push([Group_time[i], Group_co2[i]]);
+//             CH2O_time.push([Group_time[i], Group_CH2O[i]]);
+//             TVOC_time.push([Group_time[i], Group_TVOC[i]]);
+//             PM25_time.push([Group_time[i], Group_PM2_5[i]]);
+//             PM10_time.push([Group_time[i], Group_PM10[i]]);
+//           }
+//           _this.setData({
+//             now: {
+//               TEMPER: Temp_time[0][1],
+//               co2:CO2_time[0][1], 
+//               PM10:PM10_time[0][1], 
+//               PM2_5:PM25_time[0][1], 
+//               TVOC:TVOC_time[0][1], 
+//               HUD:HUD_time[0][1], 
+//               CH2O:CH2O_time[0][1], 
+  
+//               co2color:
+//               CO2_time[0][1]>= 0.1 ? "dian5" : 
+//               CO2_time[0][1]> 0.0 ? "dian3" :"dian",
+  
+//               TEMPERcolor:
+//               Temp_time[0][1]> 30 ? "dian5" :
+//               Temp_time[0][1]> 26 ? "dian4" :
+//               Temp_time[0][1]> 20 ? "dian3" :
+//               Temp_time[0][1]> 0 ? "dian2" : "dian1",
+  
+//               PM10color:
+//                PM10_time[0][1]> 0.15 ? "dian5" :
+//                PM10_time[0][1]> 0.1 ? "dian4" :
+//                PM10_time[0][1]> 0 ? "dian3" : "dian1",
+  
+//               PM2_5color:
+//                PM25_time[0][1]> 115 ? "dian5" :
+//                PM25_time[0][1]> 75 ? "dian4" :
+//                PM25_time[0][1]> 35 ? "dian3" :
+//                PM25_time[0][1]> 0 ? "dian2" : "dian",
+  
+//               TVOCcolor:
+//               TVOC_time[0][1]> 30 ? "dian5" :
+//               TVOC_time[0][1]> 26 ? "dian4" :
+//               TVOC_time[0][1]> 20 ? "dian3" :
+//               TVOC_time[0][1]> 0 ? "dian2" : "dian1",
+  
+  
+//               HUDcolor:
+//               HUD_time[0][1]>60?"dian5":
+//               HUD_time[0][1]>40?"dian3":
+//               HUD_time[0][1]>0?"dian3":"dian",
+  
+//               CH2Ocolor:
+//               CH2O_time[0][1]>0.1? "dian5" :
+//               CH2O_time[0][1]>0? "dian2" : "dian1",
+  
+//             },
+//           })
+
+//         }
+//       })
+//   },
+//   getUserProfile(e) {
+
+
+//   },
+//   onShow() {
+
+//   },
+//   getUserInfo(e) {
+
+//     console.log(e)
+//   },
+
+// onRefresh:function(){
+//   //导航条加载动画
+//   wx.showNavigationBarLoading()
+//   //loading 提示框
+//   wx.showLoading({
+//     title: 'Loading...',
+//   })
+//   console.log("下拉刷新啦");
+//   setTimeout(function () {
+//     wx.hideLoading();
+//     wx.hideNavigationBarLoading();
+//     //停止下拉刷新
+//     wx.stopPullDownRefresh();
+//   }, 1000)
+// },
+//   onPullDownRefresh:function(){
+//     this.onRefresh();
+//     var _this=this;
+//     wx.cloud.init();
+//     wx.cloud.callFunction({
+//         name: 'mysql', //云函数名称
+//         data: {
+//           sb: 0,
+//         },
+//         success: function (res) {
+//           console.log(res);
+//           var GroupID = [];
+//           var Group_TEMPER = [];
+//           var Group_HUD = [];
+//           var Group_co2 = [];
+//           var Group_CH2O = [];
+//           var Group_TVOC = [];
+//           var Group_PM2_5 = [];
+//           var Group_PM10 = [];
+//           var Group_DC = [];
+//           var Group_time = [];
+//           var date = [];
+//           for (var i = 0; i < res.result.length; ++i) {
+//             const util = require('../../utils/util.js');
+//             const moment = require('../../utils/moment.min');
+//             var date = new Date(moment(res.result[i].time));
+//             Group_TEMPER[i] = parseFloat(res.result[i].temper).toFixed(2);
+//             Group_HUD[i] = parseFloat(res.result[i].hud).toFixed(2);
+//             Group_co2[i] = parseFloat(res.result[i].CO2).toFixed(2);
+//             Group_CH2O[i] = parseFloat(res.result[i].CH2O).toFixed(3);
+//             Group_TVOC[i] = parseFloat(res.result[i].TVOC).toFixed(2);
+//             Group_PM2_5[i] = parseFloat(res.result[i].PM2_5).toFixed(2);
+//             Group_PM10[i] = parseFloat(res.result[i].PM10).toFixed(2);
+//             Group_time[i] = date.getTime() - 8 * 3600 * 1000;
+  
+//             //  console.log(date);
+//           }
+//           var Temp_time = [
+//             [Group_time[0], Group_TEMPER[0]]
+//           ];
+//           var HUD_time = [
+//             [Group_time[0], Group_HUD[0]]
+//           ];
+//           var CO2_time = [
+//             [Group_time[0], Group_co2[0]]
+//           ];
+//           var CH2O_time = [
+//             [Group_time[0], Group_CH2O[0]]
+//           ];
+//           var TVOC_time = [
+//             [Group_time[0], Group_TVOC[0]]
+//           ];
+//           var PM25_time = [
+//             [Group_time[0], Group_PM2_5[0]]
+//           ];
+//           var PM10_time = [
+//             [Group_time[0], Group_PM10[0]]
+//           ];
+
+//           for (var i = 0; i < Group_time.length; ++i) {
+//             Temp_time.push([Group_time[i], Group_TEMPER[i]]);
+//             HUD_time.push([Group_time[i], Group_HUD[i]]);
+//             CO2_time.push([Group_time[i], Group_co2[i]]);
+//             CH2O_time.push([Group_time[i], Group_CH2O[i]]);
+//             TVOC_time.push([Group_time[i], Group_TVOC[i]]);
+//             PM25_time.push([Group_time[i], Group_PM2_5[i]]);
+//             PM10_time.push([Group_time[i], Group_PM10[i]]);
+//           }
+//           _this.setData({
+//             now: {
+//               TEMPER: Temp_time[0][1],
+//               co2:CO2_time[0][1], 
+//               PM10:PM10_time[0][1], 
+//               PM2_5:PM25_time[0][1], 
+//               TVOC:TVOC_time[0][1], 
+//               HUD:HUD_time[0][1], 
+//               CH2O:CH2O_time[0][1], 
+  
+//               co2color:
+//               CO2_time[0][1]>= 0.1 ? "dian5" : 
+//               CO2_time[0][1]> 0.0 ? "dian3" :"dian",
+  
+//               TEMPERcolor:
+//               Temp_time[0][1]> 30 ? "dian5" :
+//               Temp_time[0][1]> 26 ? "dian4" :
+//               Temp_time[0][1]> 20 ? "dian3" :
+//               Temp_time[0][1]> 0 ? "dian2" : "dian1",
+  
+//               PM10color:
+//                PM10_time[0][1]> 0.15 ? "dian5" :
+//                PM10_time[0][1]> 0.1 ? "dian4" :
+//                PM10_time[0][1]> 0 ? "dian3" : "dian1",
+  
+//               PM2_5color:
+//                PM25_time[0][1]> 115 ? "dian5" :
+//                PM25_time[0][1]> 75 ? "dian4" :
+//                PM25_time[0][1]> 35 ? "dian3" :
+//                PM25_time[0][1]> 0 ? "dian2" : "dian",
+  
+//               TVOCcolor:
+//               TVOC_time[0][1]> 30 ? "dian5" :
+//               TVOC_time[0][1]> 26 ? "dian4" :
+//               TVOC_time[0][1]> 20 ? "dian3" :
+//               TVOC_time[0][1]> 0 ? "dian2" : "dian1",
+  
+  
+//               HUDcolor:
+//               HUD_time[0][1]>60?"dian5":
+//               HUD_time[0][1]>40?"dian3":
+//               HUD_time[0][1]>0?"dian3":"dian",
+  
+//               CH2Ocolor:
+//               CH2O_time[0][1]>0.1? "dian5" :
+//               CH2O_time[0][1]>0? "dian2" : "dian1",
+  
+//             },
+//           })
+
+//         }
+//       })
+//   },
+// })

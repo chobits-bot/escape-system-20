@@ -1,0 +1,12 @@
+{
+ 
+"backgroundTextStyle": "light",
+"navigationBarTitleText": "实验室吸顶灯",
+"navigationBarTextStyle": "white",
+ 
+"usingComponents": {
+  "ec-canvas": "../../ec-canvas/ec-canvas"
+  }
+  ,
+  "navigationBarBackgroundColor": "#3a3a3a"
+}

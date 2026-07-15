@@ -1,0 +1,7 @@
+.page { padding: 16rpx; }
+.chart-canvas { width: 100%; height: 480rpx; background: #ffffff; border: 1px solid #eee; border-radius: 12rpx; }
+
+.table {
+  width: 100%;
+  height: 300px;
+}

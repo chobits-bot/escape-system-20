@@ -1,0 +1,16 @@
+<navigation-bar title="test"></navigation-bar>
+<scroll-view scroll-y style="height: 50vh;">
+  <block wx:for="{{charts}}" wx:key="id" wx:for-item="c" wx:for-index="idx">
+    <view class="table">
+      <qiun-wx-ucharts
+        type="line"
+        opts="{{c.opts}}"
+        chartData="{{c.chartData}}"
+        canvas2d="{{true}}"
+        canvasId="{{c.id}}"
+        ontouch
+        inScrollView="{{true}}"
+      />
+    </view>
+  </block>
+</scroll-view>
