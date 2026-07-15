@@ -1,0 +1,14 @@
+模块文件：
+- led_driver.h — LED 灯带 PWM 调光
+- buzzer.h — 蜂鸣器控制
+- fan_control.h — 散热风扇
+- cat1_module.h — Cat1 4G 通信模块
+- led_matrix.h — LED 点阵/数码管显示
+- pins.h — 引脚定义
+和逃生项目的关系：这是吸顶灯的原始版本，后来你把 Cat1 4G 改成了 WiFi+MQTT，并加入了传感器（DHT22、火焰、ENS160），变成了逃生项目。硬件引脚完全一致。
+
+这是 吸顶灯 4.0 原版固件，和你的逃生项目是同一块硬件，但通信方式不同：
+对比	ceiling_light_4.0（本项目）	逃生/firmware
+通信	Cat1                                                    4G 模块	WiFi + MQTT
+架构	模块化（每个功能独立 .h）               较扁平（hardware_init）
+功能	LED调光、蜂鸣器、风扇、LED点阵	+ DHT22温湿度、火焰传感器、ENS160空气质量

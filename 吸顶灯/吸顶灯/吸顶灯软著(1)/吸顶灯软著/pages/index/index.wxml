@@ -1,0 +1,218 @@
+<!--index.wxml-->
+<!-- 背景图片 -->
+<!-- <view class="body" style="position: relative; left: 38rpx; top: 130rpx; width: 750rpx; height: 358rpx; display: block; box-sizing: border-box">
+
+  <!-- <image style="position: relative; left: -23rpx; top: 62rpx; width: 750rpx; height: 550rpx; display: inline-block; box-sizing: border-box" src="../images/Destroy/主页.jpg" /> -->
+<!-- </view> --> 
+
+
+
+<!-- <view style="position: relative; left: 0rpx; top: -87rpx; width: 750rpx; height: 1747rpx; display: block; box-sizing: border-box; background: linear-gradient(rgb(255, 255, 255),#fff1f1d8); "> -->
+  <!-- 首页 -->
+
+<view class="head_top"  style="width: 750rpx; height: 1741rpx; display: block; box-sizing: border-box; left: 0rpx; top: 0rpx">
+
+  <view class="tab_item bd container" style="position: relative; left: 0rpx; top: 58rpx; background-color: rgba(255, 255, 255, 0.048); width: 750rpx; height: 1698rpx; display: block; box-sizing: border-box">
+    <view  style="padding:5px 5px;font-weight: 600;;font-size: 20px;color: rgb(255, 255, 255);" bindtap="gotoPage">环境检测吸顶灯</view>
+      <view style="padding:5px 5px;font-weight: 1000;font-size: 12px;color: #C2F628;;">环境实时监测中……</view>
+  
+
+    <!-- 首页上半部分 -->
+    <view style="position: relative; width: 677rpx; height: 581rpx; display: block; box-sizing: border-box; left: 6rpx; top: 11rpx">
+  
+
+  
+      <image class="" bindtap="onLightChange" wx:if="{{Light != 0}}" src="../images/Destroy/吸顶灯照片.png" mode="aspectFit" style="width: 100%; height: 200px; position: relative; left: 0rpx; top: 7rpx" />
+      <image class="" bindtap="onLightChange" wx:else src="../images/Destroy/吸顶灯关.png" mode="aspectFit" style="width: 100%; height: 200px; position: relative; left: 15rpx; top: 0rpx" />
+  
+      <!-- <view class="tr" bindtap="gotoPage" style="position: relative; left: 0rpx; top: 149rpx; width: 677rpx; height: 248rpx; display: flex; box-sizing: border-box"> -->
+      <!-- <view class="td" style="width: 9%;">
+            <image class="item-icon" src="./img/信号.png" mode="aspectFit" />
+          </view>
+          <!-- <view class="td1" style="width: 50%; justify-content: left;color: rgba(161, 160, 147, 0.884);">Cat.1网络已连接…</view> -->
+      <!-- <view class="td" style="width: 10%;">
+            <image class="item-icon" src="./img/mesh.png" mode="aspectFit" />
+          </view> -->
+  
+      <!-- 灯光亮度 -->
+  
+      <view class="Topcolor weight" style="position: relative; left: 23rpx; top: 13rpx; height: 98rpx; box-sizing: border-box; border-radius: 40rpx; justify-content: center; display: block; width: 655rpx">
+
+        <view class="up" style="width: 649rpx; height: 75rpx; display: flex; box-sizing: border-box; position: relative; left: 0rpx; top: -2rpx">
+          <view class="primarycolor fontStyle" style="width: 91rpx; height: 67rpx; display: block; box-sizing: border-box;font-weight: 400; position: relative; border-radius: 20rpx; left: 34rpx; top: 16rpx">
+          亮度
+          </view>
+          <view class="td-75" style="width: 501rpx; height: 67rpx; display: block; box-sizing: border-box; position: relative; left: 0rpx; top: 44rpx">
+            <slider style="width: 435rpx; height: 53rpx; box-sizing: border-box; position: relative; left: 56rpx; top: -27rpx; display: block" bindchange="SliderLight_Change" block-size="28" step="1" min="0" max="1024" activeColor="#C2F628"  value="{{LightLevel}}" />
+          </view>
+        </view>
+        <view class="down">
+          <!-- <view style="padding: 10px 10px; font-weight: 10000; font-size: 24px; color: rgb(207, 198, 158); position: relative; left: -95rpx; top: -45rpx">亮度</view> -->
+  
+        </view>
+        <!-- </view> -->
+  
+  
+  
+        <!-- <view class="td1" style="width: 50%; justify-content: left;color: rgba(161, 160, 147, 0.884);">Mesh网关运行中…</view> -->
+      </view>
+      <!-- <view style="position: relative; left: 0rpx; top: -13rpx" class="line" /> -->
+    </view>
+  
+  
+  
+  
+    <!-- --------------------------------------------------------------------------------------------------- -->
+    <view class="primarycolor weight" style="position: relative; height: 866rpx; display: block; border-radius: 20rpx; box-sizing: border-box; padding-top: 12rpx; left: 14rpx; top: -48rpx; width: 677rpx" >
+      <!-- 标题 -->
+      <view class="UsuallyStyle"  bindtap="gotoLight">·常用场景·</view>
+      <!-- 白色部分 -->
+    <view class="whitecolor insideweight" style="width: 641rpx; height: 754rpx; display: block; box-sizing: border-box; position: relative; left: 20rpx; top: 23rpx">
+      <!-- 小标题 即使数据 -->
+      <view bindtap="gotoLight" style="position: relative; left: -30rpx; top: -20rpx; width: 698rpx; height: 79rpx; display: block; box-sizing: border-box">
+      <view class="primarycolor" style="width: 46rpx; height: 21rpx; display: block; box-sizing: border-box; position: relative;border-radius: 0rpx; left: 58rpx; top: 50rpx"></view>
+      <view bindtap="gotoLight " class="fontStyle" style="width: 172rpx; height: 58rpx; box-sizing: border-box; position: relative; border-radius: 40rpx; left: 60rpx; top: 0rpx; display: block">
+      实时数据
+      </view>
+    </view>
+
+  
+      <!-- 温度 -->
+      <view bindtap="gotoLight" class="Topcolor" style="width: 262rpx; height: 173rpx; box-sizing: border-box; position: relative; border-radius: 40rpx; left: 28rpx; top: -7rpx">
+            <text class="TemStyle"  >{{Temperature_Light}}°C</text>
+
+        <view class="primarycolor"  style="border-radius: 40rpx; width: 238rpx; height: 55rpx; display: block; box-sizing: border-box; left: 13rpx; top: 6rpx; position: relative">
+          <text class="TemText" >室内温度 °C</text>
+        </view>
+    </view>
+    
+      <!-- 湿度 -->
+    <view bindtap="gotoLight" class="Topcolor" style="width: 262rpx; height: 173rpx; box-sizing: border-box; position: relative; border-radius: 40rpx; left: 351rpx; top: -180rpx">
+            <text class="TemStyle"  >{{Humidity_Light}}%</text>
+
+        <view class="primarycolor"  style="border-radius: 40rpx; width: 238rpx; height: 55rpx; display: block; box-sizing: border-box; left: 13rpx; top: 6rpx; position: relative">
+          <text class="TemText" >室内湿度 %</text>
+        </view>
+        <!-- 小标题 -->
+        <view style="position: relative; left: -374rpx; top: 4rpx; width: 698rpx; height: 79rpx; display: block; box-sizing: border-box">
+      <view class="primarycolor" style="width: 46rpx; height: 21rpx; display: block; box-sizing: border-box; position: relative;border-radius: 0rpx; left: 58rpx; top: 50rpx"></view>
+      <view bindtap="gotoLight " class="fontStyle" style="width: 147rpx; height: 58rpx; box-sizing: border-box; position: relative; border-radius: 40rpx; left: 51rpx; top: 0rpx; display: block">
+      子设备    
+      </view>
+    </view>   
+      <!-- 子设备行 -->
+  
+      <view style="position: relative; width: 607rpx; background: #d3d3d300; height: 419rpx; display: block; box-sizing: border-box; left: -334rpx; top: 16rpx">
+      <!-- <view style="position: relative; left: 0rpx; top: 20rpx" class="line">
+        </view> -->
+
+  
+      <!-- 子设备第一行 -->
+      <view class=" Topcolor" style="height: 196rpx; width: 587rpx; box-sizing: border-box; left: 11rpx; top: -2rpx; display: block; position: relative" bindtap="gotoMini">
+  
+        <!-- 空气质量检测仪判断数值 -->
+        <!-- 温度 -->
+        <view class="num-text" style="width: 196rpx; height: 112rpx; display: block; box-sizing: border-box; position: relative; left: 28rpx; top: 86rpx">
+          <text style="color: rgb(255, 255, 255); font-size: 40px; position: relative; left: -71rpx; top: -12rpx" class="text">{{Temperature_Mini}}°C</text>
+        </view>
+        <!-- 电量 -->
+        <view style="position: relative; left: 520rpx; top: -58rpx; width: 170rpx; height: 88rpx; display: block; box-sizing: border-box">
+          <image style="position: relative; width: 69rpx; height: 37rpx; display: inline-block; box-sizing: border-box; left: -35rpx; top: 26rpx" wx:if="{{Cell_Mini >=90}}" src="../images/UI/100电量.png" />
+          <image style="position: relative; width: 69rpx; height: 74rpx; display: inline-block; box-sizing: border-box; left: -35rpx; top: 7rpx" wx:elif="{{Cell_Mini >= 70}}" src="../images/UI/80电量.png" />
+          <image style="position: relative; width: 69rpx; height: 74rpx; display: inline-block; box-sizing: border-box; left: -35rpx; top: 7rpx" wx:elif="{{Cell_Mini >= 50}}" src="../images/UI/60电量.png" />
+          <image style="position: relative; width: 88rpx; height: 79rpx; display: inline-block; box-sizing: border-box; left: -39rpx; top: 6rpx" wx:elif="{{Cell_Mini >= 30}}" src="../images/UI/40电量.png" />
+          <image style="position: relative; width: 69rpx; height: 37rpx; display: inline-block; box-sizing: border-box; left: -32rpx; top: 25rpx" wx:else src="../images/UI/20电量.png" />
+          <!-- 低于30显示百分比 -->
+        </view>
+        <view style="position: relative; width: 196rpx; background: #d3d3d300; height: 88rpx; display: block; box-sizing: border-box; left: 391rpx; top: -137rpx">
+          <text style="padding: 5px 5px; font-weight: 550; font-size: 15px; color: rgba(255, 255, 255, 0.459); position: relative; left: 107rpx; top: 15rpx" wx:if="{{Cell_Mini<=30}}">{{Cell_Mini}}</text>
+        </view>
+  
+        <!-- 空气质量 -->
+        <view style="position: relative; left: 16rpx; top: -224rpx; width: 238rpx; height: 69rpx; display: block; box-sizing: border-box">
+          <text  style="padding:5px 5px;font-weight: 750;;font-size: 16px;color: #C2F628;" wx:if="{{AIRlevel_Mini==1}}">空气质量优秀</text>
+          <text  style="padding:5px 5px;font-weight: 550;;font-size: 16px;color: #C2F628;" wx:elif="{{AIRlevel_Mini==0}}">空气质量良好</text>
+          <text style="padding:5px 5px;font-weight: 550;;font-size: 16px;color: rgb(243, 216, 97);" wx:elif="{{AIRlevel_Mini==3}}">空气轻度污染</text>
+          <text style="padding:5px 5px;font-weight: 550;;font-size: 16px;color: rgb(211, 96, 96);" wx:elif="{{AIRlevel_Mini==2}}">空气中度污染</text>
+          <text wx:else style="padding:5px 5px;font-weight: 550;;font-size: 16px;color: rgb(255, 0, 0);">空气重度污染</text>
+        </view>
+  
+        <!-- 错误数据备份 -->
+        <!-- <view style="position: relative; left: -44rpx; top: -28rpx; width: 238rpx; height: 69rpx; display: block; box-sizing: border-box">
+      <text style="padding:5px 5px;font-weight: 750;;font-size: 16px;color: rgb(79, 177, 55);" wx:if="{{mqMini.airlevel >= 0&&data.mqMini.airlevel <100}}" >空气质量优秀</text>
+      <text style="padding:5px 5px;font-weight: 550;;font-size: 16px;color: rgb(79, 177, 55);" wx:elif="{{data.mqMini.airlevel >= 100&&data.mqMini.airlevel <200}}">空气质量良好</text>
+      <text style="padding:5px 5px;font-weight: 550;;font-size: 16px;color: rgb(243, 216, 97);" wx:elif="{{data.mqMini.airlevel >= 200&&data.mqMini.airlevel <300}}">空气轻度污染</text>
+      <text style="padding:5px 5px;font-weight: 550;;font-size: 16px;color: rgb(211, 96, 96);" wx:elif="{{data.mqMini.airlevel >= 100&&data.mqMini.airlevel <200}}">空气中度污染</text>
+      <text  wx:else  style="padding:5px 5px;font-weight: 550;;font-size: 16px;color: rgb(255, 0, 0);">空气重度污染</text>
+          </view> -->
+  
+  
+        <!-- <view class="tag"></view> -->
+        <!-- 角标 -->
+  
+  
+        <view style="color: rgb(240, 240, 240); font-weight: 1000; position: relative; left: 23rpx; top: -335rpx; width: 290rpx; height: 88rpx; display: block; box-sizing: border-box">Mini空气质量监测仪
+  
+        </view>
+  
+  
+
+      </view>
+      <!-- 子设备第二行_六合一  -->
+      <view class="Topcolor" style="width: 587rpx; margin-left: 1%; padding: 0,auto; margin-bottom: 0; height: 196rpx; display: block; box-sizing: border-box; left: 4rpx; top: 23rpx; position: relative" bind:tap="gotoSixTo1">
+  
+        <!-- 温度 -->
+        <view class="num-text" style="width: 238rpx; height: 112rpx; box-sizing: border-box; left: 0rpx; top: 2rpx">
+          <text style="color: rgb(255, 255, 255); font-size: 40px; position: relative; left: -48rpx; top: 65rpx" class="text">{{Temperature_Sixto1}}°C</text>
+        </view>
+        <!-- 电量 -->
+        <view style="position: relative; left: 524rpx; top: -60rpx; width: 170rpx; height: 88rpx; display: block; box-sizing: border-box">
+          <image style="position: relative; width: 69rpx; height: 37rpx; display: inline-block; box-sizing: border-box; left: -35rpx; top: 26rpx" wx:if="{{Cell_Sixto1 >=90}}" src="../images/UI/100电量.png" />
+          <image style="position: relative; width: 69rpx; height: 74rpx; display: inline-block; box-sizing: border-box; left: -35rpx; top: 7rpx" wx:elif="{{Cell_Sixto1 >= 70}}" src="../images/UI/80电量.png" />
+          <image style="position: relative; width: 69rpx; height: 74rpx; display: inline-block; box-sizing: border-box; left: -35rpx; top: 7rpx" wx:elif="{{Cell_Sixto1 >= 50}}" src="../images/UI/60电量.png" />
+          <image style="position: relative; width: 88rpx; height: 79rpx; display: inline-block; box-sizing: border-box; left: -41rpx; top: 6rpx" wx:elif="{{Cell_Sixto1 >= 30}}" src="../images/UI/40电量.png" />
+          <image style="position: relative; width: 69rpx; height: 37rpx; display: inline-block; box-sizing: border-box; left: -32rpx; top: 25rpx" wx:else="{{Cell_Sixto1 >= 0}}" src="../images/UI/20电量.png" />
+        </view>
+        <view style="position: relative; width: 103rpx; background: #d3d3d300; height: 79rpx; display: block; box-sizing: border-box; left: 464rpx; top: -132rpx">
+          <text style="padding: 5px 5px; font-weight: 550; font-size: 15px; color: rgba(255, 255, 255, 0.459); position: relative; left: 37rpx; top: 7rpx" wx:if="{{Cell_Sixto1 <=30}}">{{Cell_Sixto1}}</text>
+        </view>
+  
+  
+  
+        <!-- 空气质量 -->
+        <view style="position: relative; left: 11rpx; top: -220rpx; width: 238rpx; height: 78rpx; display: block; box-sizing: border-box">
+          <text style="padding:5px 5px;font-weight: 750;;font-size: 16px;color: #C2F628;" wx:if="{{AIRlevel_Sixto1 ==1}}">空气质量优秀</text>
+          <text style="padding:5px 5px;font-weight: 550;;font-size: 16px;color: #C2F628;" wx:elif="{{AIRlevel_Sixto1 == 2}}">空气质量良好</text>
+          <text style="padding:5px 5px;font-weight: 550;;font-size: 16px;color: rgb(243, 216, 97);" wx:elif="{{AIRlevel_Sixto1 ==3}}">空气轻度污染</text>
+          <text style="padding:5px 5px;font-weight: 550;;font-size: 16px;color: rgb(211, 96, 96);" wx:elif="{{AIRlevel_Sixto1 == 4}}">空气中度污染</text>
+          <text wx:else style="padding:5px 5px;font-weight: 550;;font-size: 16px;color: rgb(255, 0, 0);">空气重度污染</text>
+        </view>
+  
+        <!-- border-radius: 6px; 半圆弧度 -->
+        <view class="tag"></view>
+  
+  
+        <view style="text-align: left; width: 196rpx; height: 39rpx; display: block; box-sizing: border-box; left: 20rpx; top: -127rpx; position: relative">
+          <view style="color: rgb(238, 238, 238); font-weight: 1000; position: relative; left: 0rpx; top: -213rpx; width: 182rpx; height: 51rpx; display: block; box-sizing: border-box">六合一监测仪</view>
+        </view>
+  
+  
+ 
+      </view>
+    </view>
+
+
+
+
+
+
+    </view>
+
+
+
+
+  </view>
+    </view>
+
+  </view>
+</view>

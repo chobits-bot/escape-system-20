@@ -1,0 +1,875 @@
+/* pages/Capital/Capital.wxss */
+.primarycolor
+{
+  color: #C2F628;
+  background: #C2F628;
+  border-radius: 20rpx;
+}
+
+.Topcolor
+{
+  background: #3a3a3a;
+  border-radius: 20rpx;
+  align-items: center;
+  /* //子控件垂直居中 */
+  justify-content: center;
+  /* //子控件水平居中 */
+}
+.whitecolor
+{
+  background: #F6F7FA;
+  border-radius: 20rpx;
+  
+}
+
+/* 字体 */
+
+/* 亮度 */
+.fontStyle{
+  padding:5px 5px;
+  font-weight: 800;
+  font-size: 18px;
+  color: #3a3a3a;
+  text-align: center;
+}
+/* 数值 */
+.PStyle{
+  padding:5px 5px;
+  font-weight: 800;
+  font-size: 18px;
+  color: #C2F628;
+  text-align: center;
+}
+/* 常用场景 */
+.UsuallyStyle{
+  padding:5px 5px;
+  font-weight: 800;
+  font-size: 20px;
+  color: #3a3a3a;
+  text-align: center;
+}
+/* 温度数值 */
+.TemStyle{
+  font-size: 32px;
+  font-weight: 400; 
+  left: 33rpx; 
+  top: 20rpx; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  height: 100rpx; display: flex; box-sizing: border-box
+}
+/* 温度文本 */
+.TemText{
+  font-size: 32px;
+  font-weight: 400; 
+  left: 33rpx; 
+  top: 20rpx; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  font-size: 18px;
+  color: #3a3a3a;
+  text-align: center;
+ position: relative;
+  left: 25rpx; top: 1rpx; width: 199rpx; height: 53rpx; display: flex; box-sizing: border-box
+}
+
+/* 宽度度 */
+.weight{
+  display:flex;
+  flex-direction:column;
+  width: 700rpx;
+  justify-content: center;
+}
+
+.insideweight{
+  display:flex;
+  flex-direction:column;
+  width: 650rpx;
+  justify-content: center;
+}
+
+/* 顶部设计 */
+.top{
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(121deg, #94C7FE -1%, #1890FF 102%);
+  box-shadow: 24px 52px 100px 0px rgba(90, 108, 234, )
+}
+
+.head_top{
+  width: 100%;
+  height: 100rpx;
+  position: relative;
+
+  overflow: hidden;
+}
+/* 半圆顶 */
+.head_top::after{
+  bottom: 0;
+  content: '';  
+  width: 140%;
+  height: 250rpx;
+  position: absolute;
+  z-index: -1;
+  left: -20%;
+  top: 0;
+  border-radius: 0 0 50% 50%;
+  background: #3a3a3a;
+}
+
+
+
+
+/* 背景颜色 */
+page {
+
+  /* background: rgba(0, 9, 59, 0.966); */
+  background: #F6F7FA;
+  
+	width: 100%;
+	display: flex;
+} 
+
+/* pages/Capital/Capital.wxss */
+
+/* page {
+  background: -webkit-linear-gradient(top,rgb(0, 0, 0),#49300b,rgb(92, 67, 44));
+}  */
+
+
+
+
+
+
+
+.body {
+  padding: 10px 3%;
+  height: 100vh;
+  background-color: #eee;
+}
+
+
+
+.line {
+  width: 100%;
+  /* （线的宽度） */
+  height: 2rpx;
+  /* （线的高度，就是线粗度） */
+  background: #aaa;
+  /* （线的颜色） */
+  margin: 10px 0px;
+}
+
+
+/* 灰 */
+.dian1 {
+  margin: 6px 15px 5px 20px;
+  float: left;
+  width: 10px;
+  height: 10px;
+  background: #c1c1c1;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+
+}
+
+/* 蓝 */
+.dian2 {
+  margin: 6px 15px 5px 20px;
+  float: left;
+  width: 10px;
+  height: 10px;
+  background: #245e9f;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+
+}
+
+/* 绿 */
+.dian3 {
+  margin: 6px 15px 5px 20px;
+  float: left;
+  width: 10px;
+  height: 10px;
+  background: #72be57;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+
+}
+
+/* 橙 */
+.dian4 {
+  margin: 6px 15px 5px 20px;
+  float: left;
+  width: 10px;
+  height: 10px;
+  background: #edac49;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+
+}
+
+/* 红 */
+.dian5 {
+  margin: 6px 15px 5px 20px;
+  float: left;
+  width: 10px;
+  height: 10px;
+  background: #ea4012;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+
+}
+
+/* 异常捕捉 */
+.dian {
+  margin: 6px 15px 5px 20px;
+  float: left;
+  width: 10px;
+  height: 10px;
+  background: #c1c1c1;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+  /* 排列形式: 向下 */
+
+}
+
+.tr {
+  display: flex;
+  flex-direction: row;
+  height: 25px;
+}
+
+.th,
+.td {
+  /* 公有的属性 */
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  /* 自动换行 */
+  width: 30%;
+  /* 4个25%相加刚好100% */
+  text-align: center;
+  /* text-align: left; */
+  /* 文本居中 */
+  justify-content: center;
+  /* 主轴居中 */
+  align-items: center;
+  /* 交叉轴居中 */
+
+}
+.td1 {
+  /* 公有的属性 */
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  /* 自动换行 */
+  width: 20%;
+  /* 4个25%相加刚好100% */
+  text-align: center;
+  /* text-align: left; */
+  /* 文本居中 */
+  justify-content: center;
+  /* 主轴居中 */
+  align-items: center;
+  /* 交叉轴居中 */
+
+}
+
+.th {
+  font-weight: 800;
+  /* 字体加重 */
+  /* background-color: #B3CCF4; */
+  /* 背景色 */
+}
+
+.td {
+  display: block;
+  /* background-color: #edf3e9; */
+  /* 背景色 */
+}
+
+.h2 {
+  /* font-size: 14px; */
+  padding-bottom: 10px;
+  color: rgb(80, 73, 73);
+  font-weight: 700;
+}
+
+.t1 {
+  padding-top: 10px;
+}
+
+
+.tab_item {
+
+  display: block;
+  background: #fff;
+  position: relative;
+  padding: 5px 10px;
+  border-radius: 15px;
+}
+
+.item-icon {
+  display: inline;
+  height: 30px;
+  width: 30px;
+}
+
+.item-title {
+  padding: 5px;
+  font-weight: 500;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+}
+
+/* mqtt连接小程序 */
+/* pages/mq/mqttClient.wxss */
+.page {
+  font-size: 26rpx;
+}
+.home {
+  padding-top: 30px;
+  padding-right: 20px;
+  padding-bottom: 30px;
+  padding-left: 20px;
+}
+
+.timu1 {
+  font-family: Lucida ;
+}
+.timu2 {
+  font-size: 45rpx;
+  padding-bottom: 10px;
+}
+
+.biaoti {
+  padding-top: 10px;
+  border: 2px;
+}
+
+.max-logo {
+  height: 200px;
+  width: 100%;
+  border-radius: 15px;
+  height: 200px;
+}
+
+
+.data-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.flower-info-block {
+  background-color: rgb(230, 230, 230);
+  display:flex;
+  flex-direction: column;
+  height: 80px;
+  width: 45%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: 2px;
+  border-radius: 15px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+
+
+.min-logo {
+  height: 40px;
+  width: 40px;
+  padding-top: 5px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+  padding-left: 20px;
+}
+
+.num-text {
+  padding-left: 35px;
+  padding-top: 12px;
+  font-size: 40rpx;
+}
+
+
+.data-title {
+  display: flex;
+  justify-content: space-around;
+}
+
+
+.up {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.down {
+  margin:0 auto;
+  font-size: 30rpx;
+}
+.low {
+  padding-top: 8px;
+  margin-top: 20px;
+  padding-left: 10px;
+  height: 60px;
+  width: 100%;
+  border-radius: 15px;
+}
+
+/* 原本内置属性 */
+
+/* pages/Capital/Capital.wxss */
+
+
+.body {
+  padding: 10px 3%;
+  height: 100%;
+  background-color: #eee;
+}
+
+.line {
+  width: 100%;
+  /* （线的宽度） */
+  height: 2rpx;
+  /* （线的高度，就是线粗度） */
+  background: #aaa;
+  /* （线的颜色） */
+  margin: 10px 0px;
+}
+
+/* 灰 */
+.dian1 {
+  margin: 6px 15px 5px 20px;
+  float: left;
+  width: 10px;
+  height: 10px;
+  background: #c1c1c1;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+
+}
+
+/* 蓝 */
+.dian2 {
+  margin: 6px 15px 5px 20px;
+  float: left;
+  width: 10px;
+  height: 10px;
+  background: #245e9f;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+
+}
+
+/* 绿 */
+.dian3 {
+  margin: 6px 15px 5px 20px;
+  float: left;
+  width: 10px;
+  height: 10px;
+  background: #72be57;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+
+}
+
+/* 橙 */
+.dian4 {
+  margin: 6px 15px 5px 20px;
+  float: left;
+  width: 10px;
+  height: 10px;
+  background: #edac49;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+
+}
+
+/* 红 */
+.dian5 {
+  margin: 6px 15px 5px 20px;
+  float: left;
+  width: 10px;
+  height: 10px;
+  background: #ea4012;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+
+}
+
+/* 异常捕捉 */
+.dian {
+  margin: 6px 15px 5px 20px;
+  float: left;
+  width: 10px;
+  height: 10px;
+  background: #c1c1c1;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+
+}
+
+
+.table {
+  display: flex;
+  flex-direction: column;
+  /* 排列形式: 向下 */
+
+}
+
+.tr {
+  display: flex;
+  flex-direction: row;
+  height: 27px;
+}
+
+.th,
+.td {
+  /* 公有的属性 */
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  /* 自动换行 */
+  width: 30%;
+  /* 4个25%相加刚好100% */
+  text-align: center;
+  /* text-align: left; */
+  /* 文本居中 */
+  justify-content: center;
+  /* 主轴居中 */
+  align-items: center;
+  /* 交叉轴居中 */
+
+}
+.td1 {
+  /* 公有的属性 */
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  /* 自动换行 */
+  width: 20%;
+  /* 4个25%相加刚好100% */
+  text-align: center;
+  /* text-align: left; */
+  /* 文本居中 */
+  justify-content: center;
+  /* 主轴居中 */
+  align-items: center;
+  /* 交叉轴居中 */
+
+}
+
+.td-75 {
+  flex-wrap: wrap;
+  /* 自动换行 */
+  width: 75%;
+}
+
+.th {
+  font-weight: 800;
+  /* 字体加重 */
+  /* background-color: #B3CCF4; */
+  /* 背景色 */
+}
+
+.td {
+  display: block;
+
+  /* background-color: #edf3e9; */
+  /* 背景色 */
+}
+
+.h2 {
+  /* font-size: 14px; */
+  padding-bottom: 10px;
+  color: rgb(80, 73, 73);
+  font-weight: 700;
+}
+
+.t1 {
+  padding-top: 10px;
+}
+
+
+
+.tab_item {
+
+  display: block;
+  background: #fff;
+  position: relative;
+  padding: 10px 7px;
+  border-radius: 15px;
+  margin: 15px 0;
+}
+
+.item-icon {
+  height: 20px;
+  display: block;
+  width: 20px;
+}
+
+.item-title {
+  padding: 6px 5px 0px;
+  font-weight: 500;
+}
+
+.echartsbox {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.echarts {
+  width: 100%;
+  height: 350rpx;
+}
+
+.ec-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+/* //半圆滑条 */
+wx-slider.wx-slider-handle-wrapper{
+
+  height:200rpx;
+  
+  }
+
+
+.body {
+  padding: 10px 3%;
+  height: 100%;
+  background-color: #eee;
+}
+
+.line {
+  width: 100%;
+  /* （线的宽度） */
+  height: 2rpx;
+  /* （线的高度，就是线粗度） */
+  background: #aaa;
+  /* （线的颜色） */
+  margin: 10px 0px;
+}
+
+/* 灰 */
+.dian1 {
+  margin: 6px 15px 5px 20px;
+  float: left;
+  width: 10px;
+  height: 10px;
+  background: #c1c1c1;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+
+}
+
+/* 蓝 */
+.dian2 {
+  margin: 6px 15px 5px 20px;
+  float: left;
+  width: 10px;
+  height: 10px;
+  background: #245e9f;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+
+}
+
+/* 绿 */
+.dian3 {
+  margin: 6px 15px 5px 20px;
+  float: left;
+  width: 10px;
+  height: 10px;
+  background: #72be57;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+
+}
+
+/* 橙 */
+.dian4 {
+  margin: 6px 15px 5px 20px;
+  float: left;
+  width: 10px;
+  height: 10px;
+  background: #edac49;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+
+}
+
+/* 红 */
+.dian5 {
+  margin: 6px 15px 5px 20px;
+  float: left;
+  width: 10px;
+  height: 10px;
+  background: #ea4012;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+
+}
+
+/* 异常捕捉 */
+.dian {
+  margin: 6px 15px 5px 20px;
+  float: left;
+  width: 10px;
+  height: 10px;
+  background: #c1c1c1;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+
+}
+
+
+.table {
+  display: flex;
+  flex-direction: column;
+  /* 排列形式: 向下 */
+
+}
+
+.tr {
+  display: flex;
+  flex-direction: row;
+  height: 27px;
+}
+
+.th,
+.td {
+  /* 公有的属性 */
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  /* 自动换行 */
+  width: 30%;
+  /* 4个25%相加刚好100% */
+  text-align: center;
+  /* text-align: left; */
+  /* 文本居中 */
+  justify-content: center;
+  /* 主轴居中 */
+  align-items: center;
+  /* 交叉轴居中 */
+
+}
+.td1 {
+  /* 公有的属性 */
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  /* 自动换行 */
+  width: 20%;
+  /* 4个25%相加刚好100% */
+  text-align: center;
+  /* text-align: left; */
+  /* 文本居中 */
+  justify-content: center;
+  /* 主轴居中 */
+  align-items: center;
+  /* 交叉轴居中 */
+
+}
+
+.td-75 {
+  flex-wrap: wrap;
+  /* 自动换行 */
+  width: 75%;
+}
+
+.th {
+  font-weight: 800;
+  /* 字体加重 */
+  /* background-color: #B3CCF4; */
+  /* 背景色 */
+}
+
+.td {
+  display: block;
+
+  /* background-color: #edf3e9; */
+  /* 背景色 */
+}
+
+.h2 {
+  /* font-size: 14px; */
+  padding-bottom: 10px;
+  color: rgb(80, 73, 73);
+  font-weight: 700;
+}
+
+.t1 {
+  padding-top: 10px;
+}
+
+
+.tab_item {
+
+  display: block;
+  background: #fff;
+  position: relative;
+  padding: 10px 7px;
+  border-radius: 15px;
+  margin: 15px 0;
+}
+
+.item-icon {
+  height: 20px;
+  display: block;
+  width: 20px;
+}
+
+.item-title {
+  padding: 6px 5px 0px;
+  font-weight: 500;
+}
+
+.echartsbox {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.echarts {
+  width: 100%;
+  height: 350rpx;
+}
+
+.ec-canvas {
+  width: 100%;
+  height: 100%;
+}

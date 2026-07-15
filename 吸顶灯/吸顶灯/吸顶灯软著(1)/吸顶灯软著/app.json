@@ -1,0 +1,40 @@
+{
+  "cloud": true,
+  "pages":[
+    "pages/index/index",
+    "pages/Group/Group",
+    "pages/miniQRS/miniQRS",
+    "pages/more/more",
+    "pages/logs/logs",
+    "pages/SixTo1/SixTo1"
+  ],
+  "tabBar": {
+    "backgroundColor": "#0000",
+    "selectedColor": "#C2F628",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "./pages/img/主页0.png",
+        "selectedIconPath": "./pages/img/1.png",
+        "text": "设备"
+      },
+      {
+        "pagePath": "pages/more/more",
+        "iconPath": "./pages/img/QQ用户0.png",
+        "selectedIconPath": "/pages/img/用户1.png",
+        "text": "更多"
+
+      }
+    ]
+  },
+
+  "window":{
+    "backgroundTextStyle":"light",
+    "navigationBarTitleText": "Weixin",
+    "navigationBarTextStyle":"black"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}
+

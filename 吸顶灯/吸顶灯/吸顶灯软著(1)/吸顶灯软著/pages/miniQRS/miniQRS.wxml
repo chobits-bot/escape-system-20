@@ -1,0 +1,112 @@
+<view class="primarycolor weight" style="position: relative; height: 1746rpx; display: block; border-radius: 20rpx; box-sizing: border-box; padding-top: 12rpx; left: 37rpx; top: 42rpx; width: 675rpx" >
+      <!-- 标题 -->
+      <view class="UsuallyStyle"  >·常用场景·</view>
+      <!-- 白色部分 -->
+    <view class="whitecolor insideweight" style="width: 641rpx; height: 1628rpx; display: block; box-sizing: border-box; position: relative; left: 20rpx; top: 23rpx">
+      <!-- 小标题 即使数据 -->
+      <view style="width: 641rpx; height: 662rpx; display: block; box-sizing: border-box">
+      <view style="width: 641rpx; height: 266rpx; display: block; box-sizing: border-box">
+      <view style="position: relative; left: -30rpx; top: -20rpx; width: 698rpx; height: 79rpx; display: block; box-sizing: border-box">
+      <view class="primarycolor" style="width: 46rpx; height: 21rpx; display: block; box-sizing: border-box; position: relative;border-radius: 0rpx; left: 58rpx; top: 50rpx"></view>
+      <view bindtap="gotoLight " class="fontStyle" style="width: 172rpx; height: 58rpx; box-sizing: border-box; position: relative; border-radius: 40rpx; left: 60rpx; top: 0rpx; display: block">
+      实时数据
+      </view>
+    </view>
+
+  
+      <!-- 温度 -->
+      <view class="Topcolor" style="width: 262rpx; height: 173rpx; box-sizing: border-box; position: relative; border-radius: 40rpx; left: 35rpx; top: -7rpx">
+            <text class="TemStyle"  >{{Temperature_Mini}}°C</text>
+
+        <view class="primarycolor"  style="border-radius: 40rpx; width: 238rpx; height: 55rpx; display: block; box-sizing: border-box; left: 13rpx; top: 6rpx; position: relative">
+          <text class="TemText" >室内温度 °C</text>
+        </view>
+    </view>
+    
+      <!-- 湿度 -->
+    <view class="Topcolor" style="width: 262rpx; height: 173rpx; box-sizing: border-box; position: relative; border-radius: 40rpx; left: 344rpx; top: -180rpx">
+            <text class="TemStyle"  >{{Humidity_Mini}}%</text>
+
+        <view class="primarycolor"  style="border-radius: 40rpx; width: 238rpx; height: 55rpx; display: block; box-sizing: border-box; left: 13rpx; top: 6rpx; position: relative">
+          <text class="TemText" >室内湿度 %</text>
+        </view>
+      </view>
+
+            <!-- CO2浓度 -->
+    <view class="Topcolor" style="width: 262rpx; height: 173rpx; box-sizing: border-box; border-radius: 40rpx; left: 35rpx; top: -138rpx; position: relative">
+            <text class="TemStyle"  >{{HCHO_Mini}}μg</text>
+
+        <view class="primarycolor"  style="border-radius: 40rpx; width: 238rpx; height: 55rpx; display: block; box-sizing: border-box; left: 13rpx; top: 6rpx; position: relative">
+          <text class="TemText" >甲醛浓度</text>
+        </view>
+      </view>
+
+            <!-- TVOC浓度 -->
+    <view class="Topcolor" style="width: 262rpx; height: 173rpx; box-sizing: border-box; position: relative; border-radius: 40rpx; left: 346rpx; top: -311rpx">
+            <text class="TemStyle"  >{{TVOC_Mini}}μg</text>
+            <!-- μg/m³ -->
+        <view class="primarycolor"  style="border-radius: 40rpx; width: 238rpx; height: 55rpx; display: block; box-sizing: border-box; left: 13rpx; top: 6rpx; position: relative">
+          <text class="TemText" >TVOC浓度</text>
+        </view>
+      </view>
+
+      <!-- 空气质量 -->
+    <view class="Topcolor" style="width: 262rpx; height: 173rpx; box-sizing: border-box; border-radius: 40rpx; left: 35rpx; top: -288rpx; position: relative">
+        <!--  -->
+        <!-- 空气质量 -->
+      <view class="TemStyle" style="position: relative; left: 0rpx; top: 2rpx">
+  <text style="color: rgb(79, 177, 55);" wx:if="{{AIRlevel_Mini==1}}" >优秀</text>
+  <text style="padding:5px 5px;font-weight: 550;;font-size: 30px;color: rgb(79, 177, 55);" wx:elif="{{AIRlevel_Mini==2}}">良好</text>
+  <text style="padding:5px 5px;;font-size: 30px;color: rgb(243, 216, 97);" wx:elif="{{AIRlevel_Mini==3}}">轻度污染</text>
+  <text style="padding:5px 5px;;font-size: 30px;color: rgb(211, 96, 96);" wx:elif="{{AIRlevel_Mini==4}}">中度污染</text>
+  <text  wx:else  style="padding:5px 5px;font-size: 30px;color: rgb(255, 0, 0);">重度污染</text>
+      </view>
+
+        <view class="primarycolor"  style="border-radius: 40rpx; width: 238rpx; height: 55rpx; display: block; box-sizing: border-box; left: 13rpx; top: 6rpx; position: relative">
+          <text class="TemText" >空气质量</text>
+        </view>
+      </view>
+
+       <!-- 电量 -->
+    <view class="Topcolor" style="width: 262rpx; height: 173rpx; box-sizing: border-box; border-radius: 40rpx; left: 344rpx; top: -461rpx; position: relative">
+      <!--  -->
+      <text class="TemStyle"  >{{Cell_Mini}}%</text>
+        <view class="primarycolor"  style="border-radius: 40rpx; width: 238rpx; height: 55rpx; display: block; box-sizing: border-box; left: 11rpx; top: 2rpx; position: relative">
+        
+          <text class="TemText"  style="position: relative; left: 20rpx; top: 1rpx">电量</text>
+        </view>
+      </view>
+
+    </view>
+        <!-- 下部分框架 -->
+        <view style="width: 262rpx; height: 557rpx; display: block; box-sizing: border-box; position: relative; left: 355rpx; top: 435rpx">
+        <!-- 小标题 -->
+        <view style="position: relative; left: -379rpx; top: -51rpx; width: 698rpx; height: 84rpx; display: block; box-sizing: border-box">
+      <view class="primarycolor" style="width: 46rpx; height: 21rpx; display: block; box-sizing: border-box; position: relative;border-radius: 0rpx; left: 58rpx; top: 50rpx"></view>
+      <view bindtap="gotoLight " class="fontStyle" style="width: 147rpx; height: 58rpx; box-sizing: border-box; position: relative; border-radius: 40rpx; left: 72rpx; top: 0rpx; display: block">
+      数据图表    
+      </view>
+    </view>   
+      <!-- 子设备行 -->
+  
+      <view style="position: relative; width: 607rpx; background: #d3d3d300; height: 419rpx; display: block; box-sizing: border-box; left: -334rpx; top: -20rpx">
+      <!-- <view style="position: relative; left: 0rpx; top: 20rpx" class="line">
+        </view> -->
+
+  
+           <!-- 子设备第一行 -->
+           <view class=" Topcolor" style="height: 871rpx; width: 587rpx; box-sizing: border-box; left: 11rpx; top: -30rpx; display: block; position: relative" >
+  
+  <!-- 数值图表 -->
+<view style="width: 100%; height: 500px;" >
+
+<ec-canvas id="mychart-dom-bar" canvas-id="mychart-bar" ec="{{ ec }}" force-use-old-canvas="true"  style="width: 675rpx; height: 1722rpx; display: inline; box-sizing: content-box"></ec-canvas>
+</view>
+
+</view>
+
+    </view>
+  </view>
+    </view>
+  </view>
+    </view>

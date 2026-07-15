@@ -1,0 +1,3 @@
+<view class='progress'>
+    <miniprogress style="position: relative; left: 0rpx; top: 0rpx" score="70" />
+</view>

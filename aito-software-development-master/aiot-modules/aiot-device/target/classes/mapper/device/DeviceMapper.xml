@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thz.device.mapper.device.DeviceMapper">
+
+    <select id="details" resultType="com.thz.device.pojo.device.Device">
+        select mac_address, aqi, tvoc, eco2, temperature, humidity,
+               electricity, fire_alarm, electricity_alarm, create_time
+        from iot_device_data where mac_address=#{macAddress}
+        order by create_time desc limit 1
+    </select>
+
+    <select id="createTimeList" resultType="java.time.LocalDateTime">
+        select create_time
+        from iot_device_data where create_time BETWEEN #{beginTime} and #{endTime}
+        and mac_address=#{macAddress}
+        order by create_time asc
+    </select>
+
+    <select id="toBigDecimalList" resultType="java.math.BigDecimal">
+        select ${toListStr}
+        from iot_device_data where create_time BETWEEN #{beginTime} and #{endTime}
+        and mac_address=#{macAddress}
+        order by create_time asc
+    </select>
+
+    <select id="toIntegerList" resultType="java.lang.Integer">
+        select ${toListStr}
+        from iot_device_data where create_time BETWEEN #{beginTime} and #{endTime}
+        and mac_address=#{macAddress}
+        order by create_time asc
+    </select>
+
+    <select id="getDeviceWarning" resultType="com.thz.common.core.pojo.dto.DeviceWarningDTO">
+        select mac_address, fire_alarm, electricity_alarm
+        from iot_device_data
+        order by create_time desc limit 1
+    </select>
+</mapper>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thz.system.mapper.sysuer.SysUserMapper">
+
+
+    <select id="selectSysUserByUserAccount" resultType="com.thz.system.pojo.SysUser">
+        select user_id,password,salt,nick_name,avatar_url,identity,email
+        from tb_sys_user
+        where BINARY user_account=#{userAccount}
+        and delete_state = 0
+    </select>
+
+</mapper>

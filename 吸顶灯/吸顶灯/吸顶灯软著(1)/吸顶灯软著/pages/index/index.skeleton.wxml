@@ -1,0 +1,100 @@
+<!--
+此文件为开发者工具生成，生成时间: 2024/4/5下午2:06:29
+使用方法：
+在 C:\Users\w6042\Documents\WeChat Files\wxid_ycnnnx80rrhb22\FileStorage\File\2024-01\QRS\pages\index\index.wxml 引入模板
+
+```
+<import src="index.skeleton.wxml"/>
+<template is="skeleton" wx:if="{{loading}}" />
+```
+
+在 C:\Users\w6042\Documents\WeChat Files\wxid_ycnnnx80rrhb22\FileStorage\File\2024-01\QRS\pages\index\index.wxss 中引入样式
+```
+@import "./index.skeleton.wxss";
+```
+
+更多详细信息可以参考文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/skeleton.html
+-->
+<template name="skeleton">
+  <view class="sk-container">
+    <view style="position: relative; left: 0px; top: -48px; width: 414px; height: 964px; display: block; box-sizing: border-box; background: linear-gradient(#666,#3b3b3b); " class="sk-image">
+      <view class="tab_item bd container" style="position: relative; left: 9px; top: 92px; background-color: rgba(255, 255, 255, 0.048); width: 395px; height: 802px; display: block; box-sizing: border-box">
+        <view style="position: relative; width: 373px; background: #d3d3d300; height: 349px; display: block; box-sizing: border-box; left: 3px; top: 6px">
+          <view style="padding:5px 5px;font-weight: 600;;font-size: 20px;color: rgb(255, 255, 255);" class="sk-transparent sk-text-14-2857-255 sk-text">环境检测吸顶灯</view>
+          <view style="padding:5px 5px;font-weight: 1000;font-size: 12px;color: rgb(207, 198, 158);" class="sk-transparent sk-text-14-2857-689 sk-text">环境实时监测中……</view>
+          <image mode="aspectFit" style="width: 100%; height: 200px; position: relative; left: 0px; top: 4px" class="sk-image"></image>
+          <view class="flower-info-block sk-image" style="position: relative; left: 0px; top: -5px; width: 373px; height: 54px; display: flex; box-sizing: border-box; background: -webkit-linear-gradient(45deg,rgba(160, 151, 34, 0.685),rgba(119, 114, 105, 0.795),rgba(88, 78, 31, 0.103)); justify-content: center">
+            <view class="up" style="width: 358px; height: 33px; display: flex; box-sizing: border-box; position: relative; left: 0px; top: -7px">
+              <image class="min-logo sk-image" style="position: relative; left: 0px; top: 4px"></image>
+              <view class="td-75" style="width: 276px; height: 36px; display: block; box-sizing: border-box; position: relative; left: 0px; top: 24px">
+                <slider block-size="28" max="1024" min="0" step="1" style="width: 267px; height: 29px; display: block; box-sizing: border-box; position: relative; left: 3px; top: -15px" value="0" background-color="#EFEFEF" active-color="#EFEFEF" block-color="#EFEFEF"></slider>
+              </view>
+            </view>
+            <view class="down"></view>
+          </view>
+        </view>
+        <view style="position: relative; width: 373px; background: #ffffff00; height: 173px; display: block; box-sizing: border-box; padding-top: 6px; left: 4px; top: 6px">
+          <view style="padding: 5px 5px; font-weight: 600; font-size: 20px; color: rgb(255, 255, 255);" class="sk-transparent sk-text-14-2857-959 sk-text">常用场景</view>
+          <view class="glass sk-image" style="width: 176px; height: 110px; display: flex; box-sizing: border-box;">
+            <view class="up">
+              <image class="min-logo sk-image"></image>
+              <view class="num-text" style="width: 108px; height: 61px; display: block; box-sizing: border-box">
+                <text class="text sk-transparent sk-text-14-2857-373 sk-text" style="color: rgb(255, 255, 255); font-size: 32px; position: relative; left: -34px; top: -11px">31.1°C</text>
+              </view>
+            </view>
+            <view class="down">
+              <text style="color: rgb(243, 243, 243);font-weight: 550;" class="sk-transparent sk-text-14-2857-50 sk-text">室内温度 °C</text>
+            </view>
+          </view>
+          <view class="glass sk-image" style="position: relative; left: 197px; top: -129px; width: 176px; height: 110px; display: flex; box-sizing: border-box; ">
+            <view class="up">
+              <image class="min-logo sk-image"></image>
+              <view class="num-text" style="width: 89px; height: 64px; display: block; box-sizing: border-box">
+                <text class="text sk-transparent sk-text-14-2857-502 sk-text" style="color: rgb(255, 255, 255); font-size: 32px; position: relative; left: -34px; top: -11px">51.0%</text>
+              </view>
+            </view>
+            <view class="down">
+              <text style="color: rgb(243, 243, 243);font-weight: 550;" class="sk-transparent sk-text-14-2857-888 sk-text">室内湿度 %</text>
+            </view>
+          </view>
+        </view>
+        <view style="position: relative; width: 373px; background: #d3d3d300; height: 229px; display: block; box-sizing: border-box; left: 3px; top: 5px">
+          <view style="padding: 24px 5px; font-weight: 600; font-size: 20px; color: rgb(255, 255, 255); width: 373px; height: 70px; display: block; box-sizing: border-box; left: 0px; top: 0px" class="sk-transparent sk-text-14-2857-683 sk-text">子设备</view>
+          <view class="td bigglass sk-image" style="height: 163px; width: 173px; display: flex; box-sizing: border-box; background: -webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.247),rgba(255, 255, 255, 0.192),rgba(51, 85, 156, 0.192)); left: 0px; top: -14px; position: relative">
+            <view class="num-text" style="width: 108px; height: 61px; display: block; box-sizing: border-box">
+              <text class="text sk-transparent sk-text-14-2857-892 sk-text" style="color: rgb(255, 255, 255); font-size: 40px; position: relative; left: -44px; top: 35px; background-position-x: 50%;">0.0°C</text>
+            </view>
+            <view style="position: relative; left: 97px; top: -71px; width: 93px; height: 48px; display: block; box-sizing: border-box">
+              <image style="position: relative; width: 38px; height: 20px; display: inline-block; box-sizing: border-box; left: -17px; top: 13px" class="sk-image"></image>
+            </view>
+            <view style="position: relative; width: 56px; background: #d3d3d300; height: 43px; display: block; box-sizing: border-box; left: 3px; top: -55px"></view>
+            <view style="position: relative; left: -1px; top: -13px; width: 131px; height: 38px; display: block; box-sizing: border-box">
+              <text style="padding: 5px; font-weight: 550; font-size: 16px; color: rgb(79, 177, 55); background-position-x: 50%;" class="sk-transparent sk-text-14-2857-462 sk-text">空气质量良好</text>
+            </view>
+            <view style="color: rgb(240, 240, 240); font-weight: 1000; position: relative; left: -2px; top: -26px; width: 160px; height: 38px; display: block; box-sizing: border-box; background-position-x: 50%;" class="sk-transparent sk-text-14-2857-944 sk-text">Mini空气质量监测仪
+
+            </view>
+            <image style="position: relative; width: 45px; height: 48px; display: block; box-sizing: border-box; left: -48px; top: -184px" class="sk-image"></image>
+          </view>
+          <view class="td bigglass sk-image" style="width: 173px; margin-left: 1%; padding: 0,auto; margin-bottom: 0; height: 163px; display: block; box-sizing: border-box; left: 197px; top: -178px; position: relative">
+            <view class="num-text" style="width: 108px; height: 61px; display: block; box-sizing: border-box; position: relative; left: 59px; top: -3px">
+              <text class="text sk-transparent sk-text-14-2857-174 sk-text" style="color: rgb(255, 255, 255); font-size: 40px; position: relative; left: -77px; top: 38px; background-position-x: 50%;">0.0°C</text>
+            </view>
+            <view style="position: relative; left: 111px; top: -71px; width: 93px; height: 48px; display: block; box-sizing: border-box">
+              <image style="position: relative; width: 38px; height: 20px; display: inline-block; box-sizing: border-box; left: -24px; top: 13px" class="sk-image"></image>
+            </view>
+            <view style="position: relative; width: 56px; background: #d3d3d300; height: 43px; display: block; box-sizing: border-box; left: 109px; top: -101px"></view>
+            <view style="position: relative; left: 13px; top: -56px; width: 131px; height: 43px; display: block; box-sizing: border-box">
+              <text style="padding: 5px; font-weight: 550; font-size: 16px; color: rgb(255, 0, 0); background-position-x: 50%;" class="sk-transparent sk-text-14-2857-451 sk-text">空气重度污染</text>
+            </view>
+            <view class="tag"></view>
+            <view style="text-align: left; width: 108px; height: 21px; display: block; box-sizing: border-box; left: 11px; top: -70px; position: relative">
+              <view style="color: rgb(238, 238, 238); font-weight: 1000; position: relative; left: 19px; top: -3px; width: 100px; height: 28px; display: block; box-sizing: border-box" class="sk-transparent sk-text-14-2857-899 sk-text">六合一监测仪</view>
+            </view>
+            <image style="position: relative; width: 45px; height: 48px; display: block; box-sizing: border-box; left: 11px; top: -216px" class="sk-image"></image>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>

@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: aiot-gateway
+  profiles:
+    active: local
+  cloud:
+    nacos:
+      discovery:
+        namespace: aebda0ac-ec6d-4e5e-9342-3e648119c974
+        server-addr: http://101.33.209.158:8848/
+      config:
+        namespace: aebda0ac-ec6d-4e5e-9342-3e648119c974
+        server-addr: http://101.33.209.158:8848/
+        file-extension: yaml

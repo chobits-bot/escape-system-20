@@ -1,0 +1,43 @@
+server:
+  port: 3010
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://42.193.218.29:3306/root?useSSL=false&useUnicode=true&characterEncoding=utf8
+    username: root
+    password: f31a2f47e74746a0
+    hikari:
+      minimum-idle: 5           # 最⼩空闲连接数
+      maximum-pool-size: 20     # 最⼤连接数
+      idle-timeout: 30000       # 空闲连接存活时间（毫秒）
+      connection-timeout: 30000 # 连接超时时间（毫秒）
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      timeout: 60s #连接空闲超过N(s秒、ms毫秒)后关闭，0为禁用，这里配置值和tcp-keepalive值一致
+      lettuce:
+        pool:
+          max-active: 8  #允许最大连接数
+          max-idle: 8    #最大空闲连接数, 默认8
+          min-idle: 0    #最小空闲连接数
+          max-wait: 5s   #请求获取连接等待时间
+
+device:
+  macAddresslist:
+    - macAddress: D8:BC:38:78:21:5C
+      macAddressName: 应急灯
+      boardId: 1
+      img: https://dongfangs.oss-cn-beijing.aliyuncs.com/aito/%E5%BA%94%E6%80%A5%E7%81%AF_9%281%29.png
+    - macAddress: D8:BC:38:78:21:E8
+      macAddressName: 指示灯
+      boardId: 3
+      img: https://dongfangs.oss-cn-beijing.aliyuncs.com/aito/%E6%8C%87%E7%A4%BA%E7%81%AF_6%281%29.png
+
+board:
+  boardList:
+    - boardName: 1号教学楼
+      boardId: 1
+    - boardName: L3实验室
+      boardId: 3

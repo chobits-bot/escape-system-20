@@ -1,0 +1,24 @@
+package com.thz.rabbitmq.config;
+
+import com.thz.rabbitmq.producer.MailUtil;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.mail.MailProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
+
+/**
+ * @Description
+ * @Author thz
+ * @Date 2025/1/14
+ */
+@Configuration
+public class MailConfig {
+    @Bean
+    @ConditionalOnProperty(prefix = "spring.mail", name="username")
+    public MailUtil mailUtil(JavaMailSender javaMailSender, MailProperties mailProperties){
+        return new MailUtil(javaMailSender, mailProperties);
+    }
+}

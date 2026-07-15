@@ -1,0 +1,143 @@
+<!doctype html>
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <link rel="shortcut icon" href="./favicon.ico">
+    <title>消防管理系统 - 用户登录</title>
+    <link href="./dist/css/tabler.min.css?1674944402" rel="stylesheet"/>
+    <link rel="stylesheet" href="./dist/css/jquery.toast.css">
+    <link rel="stylesheet" href="https://dongfangs.oss-cn-beijing.aliyuncs.com/forum/login/login.css">
+  <body class="d-flex flex-column">
+    <div class="main">
+      <div class="background">
+        <div class="login-block">
+          <a href="#" class="title">消防管理系统</a>
+          <p class="login-title">用户登录</p>
+          <form id="signInForm" method="get" autocomplete="off" novalidate>
+            <div class="mb-3">
+              <label class="form-label required">用户名</label>
+              <input type="text" class="form-control" placeholder="请输入用户名" autocomplete="off" name="userAccount" id="userAccount">
+              <div class="invalid-feedback">用户名不能为空</div>
+            </div>
+            <div class="mb-2">
+              <label class="form-label required">
+                密码
+                <span class="form-label-description">
+                            <a href="sign-edit.html">忘记密码</a>
+                          </span>
+              </label>
+              <div class="input-group input-group-flat">
+                <input type="password" class="form-control"  placeholder="请输入密码"  autocomplete="off" name="password"
+                       id="password">
+                <span class="input-group-text">
+                            <a href="javascript:void(0);" id="password_a" class="link-secondary" title="显示密码" data-bs-toggle="tooltip">
+                              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M22 12c-2.667 4.667 -6 7 -10 7s-7.333 -2.333 -10 -7c2.667 -4.667 6 -7 10 -7s7.333 2.333 10 7" /></svg>
+                            </a>
+                          </span>
+                <div class="invalid-feedback">密码不能为空</div>
+              </div>
+            </div>
+            <div class="form-footer">
+              <button id="submit" type="button" class="btn btn-primary w-100">登录</button>
+            </div>
+          </form>
+          <div class="link">
+            <a href="sign-up.html" class="register">注册账号</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <!-- 导入JS -->
+  <script src="./dist/js/jquery-3.6.3.min.js"></script>
+  <script src="./dist/js/tabler.min.js"></script>
+  <script src="./dist/js/jquery.toast.js"></script>
+  <script src="./js/common.js"></script>
+
+  <script>
+    $(function () {
+      // 获取控件
+      // 用户名
+      let userAccountEl = $('#userAccount');
+      let passwordEl = $('#password');
+      // 登录校验
+      $('#submit').click(function () {
+        let checkForm = true;
+        // 校验用户名
+        if (!userAccountEl.val()) {
+          userAccountEl.addClass('is-invalid');
+          checkForm = false;
+        }
+        // 校验密码
+        if (!passwordEl.val()) {
+          passwordEl.addClass('is-invalid');
+          checkForm = false;
+        }
+
+        // 根据判断结果提交表单
+        if (!checkForm) {
+          return false;
+        }
+
+        // 构造数据
+        let postData = {
+          userAccount : userAccountEl.val(),
+          password : passwordEl.val()
+        };
+        
+        // 发送AJAX请求，成功后跳转到index.html
+        $.ajax({
+          type: 'post',
+          url : '/system/sysUser/login',
+          contentType : 'application/x-www-form-urlencoded;charset=UTF-8',
+          data : postData,
+          success : function (respData) {
+            if (respData.code == 1000) {
+              localStorage.setItem("token", respData.data);
+              location.assign('list.html');
+            } else {
+              // 提示信息
+              $.toast({
+                  heading: '警告',
+                  text: respData.message,
+                  icon: 'warning'
+              });
+            }
+          },
+          error : function () {
+            // 提示信息
+            $.toast({
+                heading: '错误',
+                text: '访问出现问题，请与管理员联系.',
+                icon: 'error'
+            });
+          }
+        });
+      });
+
+      //
+      // 表单元单独检验
+      $('#userAccount, #password').on('blur', function () {
+        if ($(this).val()) {
+          $(this).removeClass('is-invalid');
+          $(this).addClass('is-valid');
+        } else {
+          $(this).removeClass('is-valid');
+          $(this).addClass('is-invalid');
+        }
+      });
+
+      // 显示密码
+      $('#password_a').click(function () {
+        if(passwordEl.attr('type') == 'password') {
+          passwordEl.attr('type', 'text');
+        } else {
+          passwordEl.attr('type', 'password');
+        }
+      });
+    });
+  </script>
+</html>

@@ -1,0 +1,7 @@
+mysql：
+root
+123456
+
+emqx：
+admin
+public

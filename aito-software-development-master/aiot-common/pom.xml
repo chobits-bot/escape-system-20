@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.thz</groupId>
+        <artifactId>AIOT</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>aiot-common</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>aiot-common-core</module>
+        <module>aiot-common-swagger</module>
+        <module>aiot-common-redis</module>
+        <module>aiot-common-security</module>
+        <module>aiot-common-mybatis</module>
+        <module>aiot-common-rabbitmq</module>
+        <module>aiot-common-exception</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+</project>

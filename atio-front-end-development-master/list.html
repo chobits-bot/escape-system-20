@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<title>获取设备信息</title>
+		<link href="asserts/css/bootstrap.min.css" rel="stylesheet">
+		<link href="asserts/css/dashboard.css" rel="stylesheet">
+		<link href="./dist/css/tabler.min.css?1674944402" rel="stylesheet" />
+		<link rel="stylesheet" href="./dist/css/jquery.toast.css">
+		<link async rel="stylesheet" href="blog/css/mix.min.css">
+
+		
+		<style>
+			/* 整体布局 */
+			.container {
+				display: flex;
+				height: 60vh;
+				background: #f8f9fa;
+			}
+	
+			/* 侧边栏样式 - 占25%宽度 */
+			.sidebar {
+				width: 15%;
+				min-width: 250px;
+				background: #2c3e50;
+				padding: 20px 0;
+				overflow-y: auto;
+			}
+	
+			/* 内容区域 - 占75%宽度 */
+			.content-area {
+				flex: 1;
+				padding: 20px;
+				overflow-y: auto;
+			}
+	
+	
+			.nav-pills > li > a {
+				color: #bdc3c7;
+				border-radius: 4px;
+				margin: 4px 0;
+				transition: all 0.3s;
+			}
+	
+			.nav-pills > li.active > a,
+			.nav-pills > li > a:hover {
+				background: #34495e;
+				color: #fff;
+			}
+	
+			/* 监测数据卡片样式 */
+			.dashboard {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+				gap: 20px;
+			}
+	
+			.data-card {
+				background: white;
+				border-radius: 8px;
+				padding: 20px;
+				box-shadow: 0 2px 8px rgba(254, 247, 247, 0.1);
+			}
+	
+			.data-header {
+				font-size: 18px;
+				font-weight: 600;
+				margin-bottom: 15px;
+				color: #2c3e50;
+			}
+	
+			.data-item {
+				display: flex;
+				justify-content: space-between;
+				padding: 12px 0;
+				border-bottom: 1px solid #eee;
+			}
+	
+			.data-label {
+				color: #666;
+				font-size: 14px;
+			}
+	
+			.data-value {
+				font-weight: 500;
+				color: #2c3e50;
+				font-size: 16px;
+			}
+			.nav-item{
+				width: 30%;
+				min-width: 250px;
+				padding: 20px;
+				overflow-y: auto;
+			}
+		</style>
+
+		<style type="text/css">
+			@-webkit-keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+			
+			@keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+			.chartjs-render-monitor {
+				-webkit-animation: chartjs-render-animation 0.001s;
+				animation: chartjs-render-animation 0.001s;
+			}
+		</style>
+	</head>
+
+	<body>
+		<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+			<a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">AITO消防管理系统</a>
+				<a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+				  <!-- 用户头像，也可以用img标签 -->
+				  <span id="index_nav_avatar" class="avatar avatar-sm" style="background-image: url()"></span>
+				  <div class="d-none d-xl-block ps-2">
+					<!-- 用户名 -->
+					<div id="index_nav_nickname"></div>
+					<!-- 副标题 -->
+					<div id="index_nav_name_sub" class="mt-1 small text-muted"></div>
+				  </div>
+				</a>
+				<!-- 下拉菜单 -->
+				<div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+				  <a href="javascript:void(0);" id="index_user_settings" class="dropdown-item">个人中心</a>
+				  <div class="dropdown-divider"></div>
+				  <a id="index_user_logout" href="javascript:void(0);" class="dropdown-item"><span class="text-red">退出</span></a>
+				</div>
+		</nav>
+
+	<div id="topAnnouncementList"></div>
+	
+		<div class="container-fluid">
+			<div class="row">
+				<nav class="col-md-2 d-none d-md-block bg-light sidebar">
+				<div style="height: 35px;"></div>
+					<div class="sidebar-sticky">
+						<ul class="nav nav-pills nav-stacked" class="nav nav-pills nav-stacked" style="width:96%;margin: 0 auto; text-align:center">
+							<li class="active" id="board-items-body">
+									
+							</li>
+						</ul>
+					</div>
+				</nav>
+			</div>
+		</div>
+	</body>
+
+	<script src="./dist/js/jquery-3.6.3.min.js"></script>
+	<script type="text/javascript" src="asserts/js/popper.min.js"></script>
+	<script type="text/javascript" src="asserts/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="asserts/js/feather.min.js"></script>
+	<script src="./js/echarts.min.js"></script>
+	<script src="./dist/js/tabler.min.js"></script>
+	<script src="./dist/js/jquery.toast.js"></script>
+	<script src="./js/common.js"></script>
+
+
+	<script>
+		$(function () {
+			Announcement();
+			setInterval(Announcement, 1000*6);
+			function Announcement() {
+					$.ajax({
+						type: 'get',
+						url: '/device/warningReportList',
+						success : function (respData) {
+							if(respData.code == 1000) {
+								if(respData.data != "" ||respData.data != null){
+									buildAnnouncement(respData.data);
+								}
+							} else {
+							// 提示信息
+							$.toast({
+								heading: '警告',
+								text: respData.message,
+								icon: 'warning'
+							});
+							}
+						},
+						error : function () {
+							// 提示信息
+							$.toast({
+								heading: '错误',
+								text: '访问出现问题，请与管理员联系.',
+								icon: 'error'
+							});
+						}
+				});
+			}
+
+			
+			function buildAnnouncement(data) {
+				// 遍历版块
+				data.forEach(announcement => {
+					// 构建版块		
+					let itemHtml =  '<div class="web_notice" style="position: fixed;top: 0;left: 0;width: 100%;height: 100%;background: rgba(0,0,0,0.3);z-index: 99999;">'+
+						    		'<div style="position: fixed;top: 50%;left: 50%;width: 550px;background: #FFF;transform: translate(-50%, -50%);border-radius: 40px;padding: 50px 40px;">'+
+									'<h3 style="font-weight: bold;text-align: center;font-size: 30px;">设备报警' +
+									'<audio src="mp3/warning.mp3" autoplay="autoplay" loop="loop" preload="auto"></audio>'+
+									'<div style="font-size: 16px;margin-top: 26px;line-height: 30px;color: #999;">'+announcement+'</div>' +
+									'<a style="display: block;background: #98a3ff;color: #FFF;text-align: center;font-weight: bold;font-size: 19px;line-height: 60px;margin: 0 auto;margin-top: 45px;border-radius: 32px;width: 80%;" onclick="javascript:document.querySelector(\'.web_notice\').remove()">我知道了</a>';
+									'</div>'+
+									'</div>';
+					let announcementtem = $(itemHtml);
+					$('#topAnnouncementList').append(announcementtem);
+				});
+			}
+		})
+	</script>
+
+	<script>
+		$.ajax({
+			type: 'get',
+			url: '/board/topList',
+			success : function (respData) {
+				if(respData.code == 1000) {
+					buildTopBoard(respData.data);
+				} else {
+				// 提示信息
+				$.toast({
+					heading: '警告',
+					text: respData.message,
+					icon: 'warning'
+				});
+				}
+			},
+			error : function () {
+				// 提示信息
+				$.toast({
+					heading: '错误',
+					text: '访问出现问题，请与管理员联系.',
+					icon: 'error'
+				});
+			}
+    	});
+
+	function buildTopBoard(data) {
+      // 版块导航
+      let navBoardListEl = $('#topBoardList');
+      // 遍历版块
+      data.forEach(board => {
+        // 构建版块		
+        let itemHtml =  '<li>' +
+						'<a  target="iframe_a" data-toggle="collapse" data-target=".ok1" class="sheen">'+board.boardName+'</a>' +
+						'<ul class="nav nav-pills nav-stacked ok1 collapse" id="device-items-body'+board.boardId+'">' +
+						'</ul>' +
+						'</li>';
+        let boardItem = $(itemHtml);
+		$('#board-items-body').append(boardItem);
+		buildToDevice(board.boardId);
+      });
+	  
+
+	  function buildToDevice(boardId) {
+		let postData = {
+			boardId : boardId
+        };
+		$.ajax({
+					type: 'get',
+					url : '/device/list',
+					contentType : 'application/x-www-form-urlencoded;charset=UTF-8',
+					data : postData,
+					success : function (respData) {
+						if (respData.code == 1000) {
+							buildToDeviceList(respData.data);
+						} else {
+						// 提示信息
+						$.toast({
+							heading: '警告',
+							text: respData.message,
+							icon: 'warning'
+						});
+					}
+				},
+					error : function () {
+						// 提示信息
+						$.toast({
+							heading: '错误',
+							text: '访问出现问题，请与管理员联系.',
+							icon: 'error'
+						});
+					}
+				});
+		}
+
+		function buildToDeviceList(data) {
+		// 遍历版块
+		data.forEach(device => {
+			// 构建版块
+			let itemHtml = '<li class="nav-item" target="iframe_a">'
+							+'<a class="sheen" href="details.html?macAddress='+device.macAddress+'">'
+							+'<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"'
+							+'stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">'
+							+'<path stroke="none" d="M0 0h24v24H0z" fill="none" />'
+							+'<path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"/>'
+							+'</svg>'+ device.macAddress + device.macAddressName +'<span class="sr-only"></span>'
+							+'</a>'
+							+'</li>';
+				let deviceItem = $(itemHtml);
+				$('#device-items-body'+device.boardId+'').append(deviceItem);
+		});
+		}
+
+    }
+	</script>
+
+
+
+
+	<script>
+		$(function () {
+			$('#index_user_logout').click(function () {
+				$.ajax({
+					type : 'delete',
+					url : '/system/sysUser/logout',
+					complete : function () {
+					location.assign('/sign-in.html');
+					}
+				});
+			});
+
+
+			$.ajax({
+				// 请求的方法
+				type : 'get',
+				// 没有参数，表示获取当前登录用户的信息
+				url : '/system/sysUser/info',
+				contentType : 'application/x-www-form-urlencoded;charset=UTF-8',
+				// 成功回调
+				success : function(respData) {
+					// 判断响应的状态码
+					if (respData.code == 1000) {
+					// 设置页面上用户的信息
+					let user = respData.data;
+					// 设置页面上的头像
+					$('#index_nav_avatar').css('background-image', 'url(' + user.avatarUrl + ')');
+					// 用户昵称
+					$('#index_nav_nickname').html(user.nickName);
+					// 设置用户组
+					$('#index_nav_name_sub').html(user.identityName);
+					} 
+				},
+			});
+
+	})
+	</script>
+
+	
+</html>
