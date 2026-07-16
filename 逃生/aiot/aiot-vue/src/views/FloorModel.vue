@@ -1010,7 +1010,7 @@ function drawPlan2d() {
 
     // 标签
     ctx.fillStyle = c.text
-    ctx.font = '12px "Microsoft YaHei", sans-serif'
+    ctx.font = '12px "Arial", "Segoe UI", "Helvetica Neue", sans-serif'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'top'
     const labelY = ntype === 'room' ? cy + roomD / 2 + 4 : cy + 14
@@ -1069,7 +1069,7 @@ function drawPlan2d() {
 
   // ── 楼层标题 ──
   ctx.fillStyle = '#e2e8f0'
-  ctx.font = 'bold 18px "Microsoft YaHei", sans-serif'
+  ctx.font = 'bold 18px "Arial", "Segoe UI", "Helvetica Neue", sans-serif'
   ctx.textAlign = 'left'
   ctx.textBaseline = 'top'
   ctx.fillText(`${fid}F Floor Plan`, 16, 16)
