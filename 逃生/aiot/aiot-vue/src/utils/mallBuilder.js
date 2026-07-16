@@ -44,6 +44,10 @@ const COLORS = {
   sofa:        0x6366f1,
   desk:        0x92400e,
   carpet:      0x1e3a5f,
+  indicatorGreen:  0x22c55e,
+  indicatorYellow: 0xfbbf24,
+  indicatorRed:    0xef4444,
+  ceilingLight:    0xfff7ed,
 }
 
 export class MallBuilder {
@@ -56,6 +60,8 @@ export class MallBuilder {
     this._nodeMap = new Map()
     this._edgeIndex = new Map()       // nodeKey → [connected nodeKeys]
     this._originalOpacities = new Map()
+    this.indicatorLights = new Map()  // floorId → [{mesh, light, position}]
+    this.ceilingLights = new Map()    // floorId → [{mesh, light, position}]
   }
 
   /* ─── normalize ──────────────────────────────────────────── */
@@ -113,6 +119,10 @@ export class MallBuilder {
           this._buildRoomFurnishings(group, node)
         }
       }
+
+      // 指示灯和吸顶灯
+      this._buildIndicatorLights(group, floorNodes, floorId)
+      this._buildCeilingLights(group, floorNodes, floorId)
 
       // 建筑外观壳体（外墙+窗户+屋顶）
       this._buildExteriorShell(group, floorNodes, floorId)
@@ -671,7 +681,7 @@ export class MallBuilder {
     }
 
     // 警示标识
-    this._addLabel(group, '⚠ 配电间', x, y + WALL_H + 0.6, z, 'electrical')
+    this._addLabel(group, 'Electrical Room', x, y + WALL_H + 0.6, z, 'electrical')
   }
 
   /* ─── 走廊通道：地面条带 + 中心线 ──────────────────────── */
@@ -1011,6 +1021,136 @@ export class MallBuilder {
     this.allObjects.push(sign)
   }
 
+  /* ─── 指示灯：走廊墙壁安装，每层8个 ──────────────── */
+  _buildIndicatorLights(group, floorNodes, floorId) {
+    const lights = []
+    const corridorNodes = floorNodes.filter(n => n.nodeType === 'corridor')
+    const roomNodes = floorNodes.filter(n => n.nodeType === 'room')
+
+    // 每个走廊节点两侧各放一个指示灯（墙壁位置）
+    for (const node of corridorNodes) {
+      const neighbors = this._edgeIndex.get(node.nodeKey) || []
+      const right = new THREE.Vector3(1, 0, 0)
+
+      for (const side of [-1, 1]) {
+        const pos = new THREE.Vector3(
+          node.x + right.x * side * 1.5,
+          node.y + WALL_H - 0.3,
+          node.z + right.z * side * 1.5
+        )
+
+        const lightMesh = this._mesh(
+          new THREE.SphereGeometry(0.08, 8, 8),
+          { color: COLORS.indicatorGreen, emissive: COLORS.indicatorGreen, emissiveIntensity: 0.8 }
+        )
+        lightMesh.position.copy(pos)
+        group.add(lightMesh)
+        this.allObjects.push(lightMesh)
+
+        const ptLight = new THREE.PointLight(COLORS.indicatorGreen, 0.5, 4)
+        ptLight.position.copy(pos)
+        group.add(ptLight)
+        this.allObjects.push(ptLight)
+
+        lights.push({ mesh: lightMesh, light: ptLight, position: pos.clone(), floorId })
+      }
+    }
+
+    // 房间门口朝走廊方向放指示灯（补到8个）
+    for (const node of roomNodes) {
+      if (lights.length >= 8) break
+      const neighbors = this._edgeIndex.get(node.nodeKey) || []
+      if (neighbors.length === 0) continue
+
+      // 找最近的走廊邻居方向
+      const corridorNeighbor = neighbors.find(nk => {
+        const nb = this._nodeMap.get(nk)
+        return nb && nb.nodeType === 'corridor'
+      })
+      if (!corridorNeighbor) continue
+
+      const nb = this._nodeMap.get(corridorNeighbor)
+      if (!nb) continue
+
+      const dx = nb.x - node.x, dz = nb.z - node.z
+      const dirX = Math.abs(dx) > Math.abs(dz) ? Math.sign(dx) : 0
+      const dirZ = Math.abs(dx) > Math.abs(dz) ? 0 : Math.sign(dz)
+
+      const pos = new THREE.Vector3(
+        node.x + dirX * (ROOM_W / 2 + 0.1),
+        node.y + WALL_H - 0.3,
+        node.z + dirZ * (ROOM_D / 2 + 0.1)
+      )
+
+      const lightMesh = this._mesh(
+        new THREE.SphereGeometry(0.08, 8, 8),
+        { color: COLORS.indicatorGreen, emissive: COLORS.indicatorGreen, emissiveIntensity: 0.8 }
+      )
+      lightMesh.position.copy(pos)
+      group.add(lightMesh)
+      this.allObjects.push(lightMesh)
+
+      const ptLight = new THREE.PointLight(COLORS.indicatorGreen, 0.5, 4)
+      ptLight.position.copy(pos)
+      group.add(ptLight)
+      this.allObjects.push(ptLight)
+
+      lights.push({ mesh: lightMesh, light: ptLight, position: pos.clone(), floorId })
+    }
+
+    this.indicatorLights.set(floorId, lights)
+  }
+
+  /* ─── 吸顶灯：天花板安装，每层6个（2x3网格） ──────── */
+  _buildCeilingLights(group, floorNodes, floorId) {
+    const lights = []
+    if (!floorNodes.length) return
+
+    // 计算楼层包围盒
+    let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity
+    let y = 0
+    for (const n of floorNodes) {
+      const hw = n.nodeType === 'room' ? ROOM_W / 2 + 1 : 2
+      const hd = n.nodeType === 'room' ? ROOM_D / 2 + 1 : 2
+      minX = Math.min(minX, n.x - hw)
+      maxX = Math.max(maxX, n.x + hw)
+      minZ = Math.min(minZ, n.z - hd)
+      maxZ = Math.max(maxZ, n.z + hd)
+      y = n.y
+    }
+
+    const rows = 2, cols = 3
+    const spacingX = (maxX - minX) / (cols + 1)
+    const spacingZ = (maxZ - minZ) / (rows + 1)
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const px = minX + spacingX * (c + 1)
+        const pz = minZ + spacingZ * (r + 1)
+        const py = y + WALL_H - 0.1
+
+        // 吸顶灯圆盘
+        const disc = this._mesh(
+          new THREE.CylinderGeometry(0.35, 0.35, 0.04, 16),
+          { color: COLORS.ceilingLight, emissive: COLORS.ceilingLight, emissiveIntensity: 0.6, roughness: 0.3 }
+        )
+        disc.position.set(px, py, pz)
+        group.add(disc)
+        this.allObjects.push(disc)
+
+        // 向下发光的点光源
+        const ptLight = new THREE.PointLight(COLORS.ceilingLight, 0.8, 8)
+        ptLight.position.set(px, py - 0.2, pz)
+        group.add(ptLight)
+        this.allObjects.push(ptLight)
+
+        lights.push({ mesh: disc, light: ptLight, position: new THREE.Vector3(px, py, pz), floorId })
+      }
+    }
+
+    this.ceilingLights.set(floorId, lights)
+  }
+
   /* ─── 建筑外观壳体：外墙 + 窗户 + 屋顶 ────────────── */
   _buildExteriorShell(group, nodes, floorId) {
     if (!nodes.length) return
@@ -1155,7 +1295,7 @@ export class MallBuilder {
     ctx.fill()
 
     ctx.fillStyle = COLORS.label
-    ctx.font = `bold ${28 * scale}px "Microsoft YaHei", "PingFang SC", sans-serif`
+    ctx.font = `bold ${28 * scale}px "Arial", "Segoe UI", "Helvetica Neue", sans-serif`
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     ctx.fillText(text, canvas.width / 2, canvas.height / 2)
@@ -1295,6 +1435,48 @@ export class MallBuilder {
 
   getNodePositions() {
     return this.nodePositions
+  }
+
+  /**
+   * 设置指示灯颜色（用于动态模拟）
+   * lightStates: Map<floorId, [{index, color}]>
+   */
+  setIndicatorColors(states) {
+    for (const [floorId, colorStates] of states) {
+      const lights = this.indicatorLights.get(floorId)
+      if (!lights) continue
+      for (const { index, color } of colorStates) {
+        if (index >= lights.length) continue
+        const { mesh, light } = lights[index]
+        if (mesh.material) {
+          mesh.material.color.set(color)
+          mesh.material.emissive.set(color)
+        }
+        if (light) light.color.set(color)
+      }
+    }
+  }
+
+  /**
+   * 重置所有指示灯为默认绿色
+   */
+  resetIndicatorColors() {
+    for (const [floorId, lights] of this.indicatorLights) {
+      for (const { mesh, light } of lights) {
+        if (mesh.material) {
+          mesh.material.color.set(COLORS.indicatorGreen)
+          mesh.material.emissive.set(COLORS.indicatorGreen)
+        }
+        if (light) light.color.set(COLORS.indicatorGreen)
+      }
+    }
+  }
+
+  /**
+   * 获取指示灯位置（用于模拟）
+   */
+  getIndicatorLights() {
+    return this.indicatorLights
   }
 
   clear() {

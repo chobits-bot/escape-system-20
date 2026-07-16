@@ -164,7 +164,7 @@ export class PathRenderer {
     this.objects.push(light)
 
     // 标签
-    this._addMarkerLabel(pt, isStart ? '起点' : '出口', color)
+    this._addMarkerLabel(pt, isStart ? 'Start' : 'Exit', color)
   }
 
   /* ─── 途经点小圆球 ─── */
@@ -197,7 +197,7 @@ export class PathRenderer {
     // 文字
     const hex = '#' + new THREE.Color(color).getHexString()
     ctx.fillStyle = hex
-    ctx.font = 'bold 28px "Microsoft YaHei", sans-serif'
+    ctx.font = 'bold 28px "Arial", "Segoe UI", "Helvetica Neue", sans-serif'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     ctx.fillText(text, 128, 34)

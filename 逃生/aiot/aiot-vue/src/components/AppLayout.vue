@@ -4,7 +4,7 @@
     <aside class="sidebar" :class="{ collapsed }">
       <div class="logo">
         <el-icon class="logo-icon"><Connection /></el-icon>
-        <span v-show="!collapsed" class="logo-text">AIoT 平台</span>
+        <span v-show="!collapsed" class="logo-text">AIoT Platform</span>
       </div>
 
       <nav class="nav">
@@ -79,9 +79,9 @@
             </div>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item command="profile">个人中心</el-dropdown-item>
-                <el-dropdown-item command="settings">系统设置</el-dropdown-item>
-                <el-dropdown-item command="logout" :icon="SwitchButton">退出登录</el-dropdown-item>
+                <el-dropdown-item command="profile">Profile</el-dropdown-item>
+                <el-dropdown-item command="settings">Settings</el-dropdown-item>
+                <el-dropdown-item command="logout" :icon="SwitchButton">Logout</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -117,9 +117,9 @@
               </el-button>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item command="refresh">刷新当前</el-dropdown-item>
-                  <el-dropdown-item command="closeOther">关闭其他</el-dropdown-item>
-                  <el-dropdown-item command="closeAll">关闭所有</el-dropdown-item>
+                  <el-dropdown-item command="refresh">Refresh</el-dropdown-item>
+                  <el-dropdown-item command="closeOther">Close Others</el-dropdown-item>
+                  <el-dropdown-item command="closeAll">Close All</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -153,16 +153,16 @@ const collapsed = ref(false)
 const currentTime = ref('')
 
 const navItems = [
-  { path: '/dashboard', label: '数据总览', icon: 'DataBoard' },
-  { path: '/realtime', label: '实时数据', icon: 'Monitor' },
-  { path: '/floor-model', label: '楼层模型', icon: 'OfficeBuilding' },
-  { path: '/sensors', label: '传感器', icon: 'Cpu' },
-  { path: '/boards', label: '控制板', icon: 'Grid' },
-  { path: '/signboards', label: '指示牌', icon: 'Monitor' },
-  { path: '/alerts', label: '设备告警', icon: 'Bell' },
-  // { path: '/notifications', label: '通知日志', icon: 'ChatDotRound' },
-  { path: '/reports', label: '数据报表', icon: 'TrendCharts' },
-  { path: '/users', label: '用户管理', icon: 'User' }
+  { path: '/dashboard', label: 'Dashboard', icon: 'DataBoard' },
+  { path: '/realtime', label: 'Realtime Data', icon: 'Monitor' },
+  { path: '/floor-model', label: 'Floor Model', icon: 'OfficeBuilding' },
+  { path: '/sensors', label: 'Sensors', icon: 'Cpu' },
+  { path: '/boards', label: 'Control Boards', icon: 'Grid' },
+  { path: '/signboards', label: 'Signboards', icon: 'Monitor' },
+  { path: '/alerts', label: 'Device Alerts', icon: 'Bell' },
+  // { path: '/notifications', label: 'Notification Logs', icon: 'ChatDotRound' },
+  { path: '/reports', label: 'Data Reports', icon: 'TrendCharts' },
+  { path: '/users', label: 'User Management', icon: 'User' }
 ]
 
 const currentNav = computed(() => 
@@ -216,9 +216,9 @@ const handleLanguageChange = (lang) => {
 const onCommand = async (cmd) => {
   if (cmd === 'logout') {
     try {
-      await ElMessageBox.confirm('确定要退出登录吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      await ElMessageBox.confirm('Are you sure you want to logout?', 'Confirm', {
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Cancel',
         type: 'warning'
       })
       auth.clearAuth()

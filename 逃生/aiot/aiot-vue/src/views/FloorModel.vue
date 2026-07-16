@@ -2,7 +2,7 @@
   <div class="page floor-page">
     <div class="page-header">
       <div>
-        <div class="page-title-text">楼层模型</div>
+        <div class="page-title-text">Floor Model</div>
       </div>
       <div class="toolbar">
         <el-radio-group v-model="viewMode" size="small">
@@ -16,42 +16,64 @@
     <div class="panel escape-toolbar">
       <div class="toolbar-row">
         <el-select v-model="selectedAlgo" size="small" style="width:140px">
-          <el-option label="蚁群算法 (ACO)" value="aco" />
-          <el-option label="粒子群 (PSO)" value="pso" disabled />
-          <el-option label="模拟退火 (SA)" value="sa" disabled />
-          <el-option label="遗传算法 (GA)" value="ga" disabled />
+          <el-option label="Ant Colony (ACO)" value="aco" />
+          <el-option label="Particle Swarm (PSO)" value="pso" disabled />
+          <el-option label="Simulated Annealing (SA)" value="sa" disabled />
+          <el-option label="Genetic Algorithm (GA)" value="ga" disabled />
         </el-select>
         <div class="fire-switch" :class="{ active: fireMode }">
           <el-switch v-model="fireMode" size="small" active-color="#ef4444" @change="onFireModeChange" />
-          <span class="fire-label">🔥 火灾模式</span>
-          <el-tooltip v-if="fireMode" content="火灾模式已开启：禁用所有电梯，仅允许楼梯疏散" placement="bottom">
-            <el-tag type="danger" size="small" effect="dark">禁电梯</el-tag>
+          <span class="fire-label">🔥 Fire Mode</span>
+          <el-tooltip v-if="fireMode" content="Fire mode enabled: all elevators disabled, stairs only" placement="bottom">
+            <el-tag type="danger" size="small" effect="dark">Elevators Disabled</el-tag>
           </el-tooltip>
         </div>
-        <el-select v-model="startNode" size="small" placeholder="选择起点" style="width:200px" filterable>
+        <el-select v-model="startNode" size="small" placeholder="Select Start Point" style="width:200px" filterable>
           <el-option v-for="n in availableStartNodes" :key="n.nodeKey || n.node_key" :label="`${n.name} (${n.nodeKey || n.node_key})`" :value="n.nodeKey || n.node_key" />
         </el-select>
-        <el-button type="danger" size="small" :loading="computing" @click="onCalculate">{{ fireMode ? '🔥 计算逃生路径' : '计算路径' }}</el-button>
-        <el-button size="small" @click="onClearPath">清除路径</el-button>
-        <el-tag v-if="lastResult" type="success" size="small">耗时 {{ lastResult.computeTimeMs || lastResult.compute_time_ms }}ms · {{ lastResult.paths.length }} 条路径</el-tag>
+        <el-button type="danger" size="small" :loading="computing" @click="onCalculate">{{ fireMode ? '🔥 Calculate Escape Path' : 'Calculate Path' }}</el-button>
+        <el-button size="small" @click="onClearPath">Clear Path</el-button>
+        <el-tag v-if="lastResult" type="success" size="small">Computed in {{ lastResult.computeTimeMs || lastResult.compute_time_ms }}ms · {{ lastResult.paths.length }} paths</el-tag>
       </div>
       <!-- 路径结果摘要 -->
       <div v-if="lastResult && lastResult.paths.length" class="path-results">
         <div v-for="(p, i) in lastResult.paths" :key="i" class="path-item">
-          <el-tag size="small" :type="i === 0 ? 'danger' : 'info'">{{ i === 0 ? '最优' : `#${i+1}` }}</el-tag>
+          <el-tag size="small" :type="i === 0 ? 'danger' : 'info'">{{ i === 0 ? 'Optimal' : `#${i+1}` }}</el-tag>
           <span class="path-exit">→ {{ p.exitName || p.exit_name }}</span>
-          <span class="path-cost">代价 {{ p.totalCost || p.total_cost }}</span>
+          <span class="path-cost">Cost {{ p.totalCost || p.total_cost }}</span>
           <span class="path-time">≈ {{ p.estimatedTime || p.estimated_time }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 模拟控制工具栏 -->
+    <div class="panel simulation-toolbar">
+      <div class="toolbar-row">
+        <span class="sim-title">Simulation</span>
+        <el-select v-model="simulation.smokeOrigin" size="small" placeholder="Smoke Origin" style="width:200px" clearable filterable>
+          <el-option v-for="n in smokeOriginOptions" :key="n.nodeKey || n.node_key" :label="`${n.name}`" :value="n.nodeKey || n.node_key" />
+        </el-select>
+        <el-button type="success" size="small" :disabled="simulation.active" @click="startSimulation">
+          ▶ Start
+        </el-button>
+        <el-button size="small" :disabled="!simulation.active" @click="pauseSimulation">
+          {{ simulation.paused ? '▶ Resume' : '⏸ Pause' }}
+        </el-button>
+        <el-button size="small" @click="resetSimulation">↻ Reset</el-button>
+        <div class="sim-speed">
+          <span class="sim-speed-label">Speed</span>
+          <el-slider v-model="simulation.speed" :min="0.5" :max="3" :step="0.1" size="small" style="width:100px" />
+          <span class="sim-speed-val">{{ simulation.speed.toFixed(1) }}x</span>
         </div>
       </div>
     </div>
 
     <div class="panel floor-panel">
       <div class="panel-header">
-        <span class="panel-title">楼层浏览</span>
+        <span class="panel-title">Floor Browser</span>
         <div class="panel-actions">
-          <el-tag :type="graphLoaded ? 'success' : 'info'">{{ graphLoaded ? `已加载 ${graphNodes.length} 节点` : '加载中...' }}</el-tag>
-          <el-tag type="warning">当前：{{ activeFloor.name }}</el-tag>
+          <el-tag :type="graphLoaded ? 'success' : 'info'">{{ graphLoaded ? `Loaded ${graphNodes.length} nodes` : 'Loading...' }}</el-tag>
+          <el-tag type="warning">Current: {{ activeFloor.name }}</el-tag>
         </div>
       </div>
 
@@ -61,17 +83,17 @@
         <!-- 相机控制面板 -->
         <div class="cam-panel">
           <div class="cam-section">
-            <div class="cam-title">视角预设</div>
+            <div class="cam-title">View Presets</div>
             <div class="cam-presets">
-              <el-button size="small" @click="setCamPreset('perspective')">透视</el-button>
-              <el-button size="small" @click="setCamPreset('top')">俯视</el-button>
-              <el-button size="small" @click="setCamPreset('front')">正面</el-button>
-              <el-button size="small" @click="setCamPreset('side')">侧面</el-button>
-              <el-button size="small" @click="setCamPreset('fit')">自适应</el-button>
+              <el-button size="small" @click="setCamPreset('perspective')">Perspective</el-button>
+              <el-button size="small" @click="setCamPreset('top')">Top</el-button>
+              <el-button size="small" @click="setCamPreset('front')">Front</el-button>
+              <el-button size="small" @click="setCamPreset('side')">Side</el-button>
+              <el-button size="small" @click="setCamPreset('fit')">Fit</el-button>
             </div>
           </div>
           <div class="cam-section">
-            <div class="cam-title">位置 (X / Y / Z)</div>
+            <div class="cam-title">Position (X / Y / Z)</div>
             <div class="cam-row">
               <span class="cam-axis x">X</span>
               <el-slider v-model="camPos.x" :min="-60" :max="60" :step="0.5" size="small" @input="applyCamPos" />
@@ -79,7 +101,7 @@
             </div>
             <div class="cam-row">
               <span class="cam-axis y">Y</span>
-              <el-slider v-model="camPos.y" :min="0" :max="60" :step="0.5" size="small" @input="applyCamPos" />
+              <el-slider v-model="camPos.y" :min="0" :max="80" :step="0.5" size="small" @input="applyCamPos" />
               <span class="cam-val">{{ camPos.y.toFixed(1) }}</span>
             </div>
             <div class="cam-row">
@@ -89,7 +111,7 @@
             </div>
           </div>
           <div class="cam-section">
-            <div class="cam-title">目标焦点</div>
+            <div class="cam-title">Target Focus</div>
             <div class="cam-row">
               <span class="cam-axis x">X</span>
               <el-slider v-model="camTarget.x" :min="-30" :max="30" :step="0.5" size="small" @input="applyCamTarget" />
@@ -97,7 +119,7 @@
             </div>
             <div class="cam-row">
               <span class="cam-axis y">Y</span>
-              <el-slider v-model="camTarget.y" :min="-5" :max="30" :step="0.5" size="small" @input="applyCamTarget" />
+              <el-slider v-model="camTarget.y" :min="-5" :max="40" :step="0.5" size="small" @input="applyCamTarget" />
               <span class="cam-val">{{ camTarget.y.toFixed(1) }}</span>
             </div>
             <div class="cam-row">
@@ -106,7 +128,7 @@
               <span class="cam-val">{{ camTarget.z.toFixed(1) }}</span>
             </div>
           </div>
-          <div class="cam-hint">鼠标左键旋转 · 右键平移 · 滚轮缩放<br/>WASD / 方向键移动相机</div>
+          <div class="cam-hint">Left-click rotate · Right-click pan · Scroll zoom<br/>WASD / Arrow keys to move camera</div>
         </div>
       </div>
 
@@ -134,6 +156,12 @@ import { getGraphNodes, getGraphEdges, calculateEscape } from '@/api/escape'
 import { MallBuilder } from '@/utils/mallBuilder'
 import { PathRenderer } from '@/utils/pathRenderer'
 
+const COLORS = {
+  indicatorGreen: 0x22c55e,
+  indicatorYellow: 0xfbbf24,
+  indicatorRed: 0xef4444,
+}
+
 /* ═══ 基础状态 ═══ */
 const viewMode = ref('3d')
 const canvasWrap = ref()
@@ -147,6 +175,21 @@ const computing = ref(false)
 const lastResult = ref(null)
 const fireMode = ref(true)   // 火灾模式：默认开启，禁用电梯
 
+/* ═══ 模拟状态 ═══ */
+const simulation = reactive({
+  active: false,
+  paused: false,
+  speed: 1.0,
+  progress: 0,
+  path: [],
+  smokeNodes: [],
+  smokeOrigin: '',
+})
+let personGroup = null
+let smokeParticles = []
+let simulationAnimId = null
+const simulationClock = new THREE.Clock()
+
 /* ═══ 起点选择器：火灾模式下过滤电梯节点 ═══ */
 const availableStartNodes = computed(() => {
   if (!fireMode.value) return graphNodes.value
@@ -154,7 +197,7 @@ const availableStartNodes = computed(() => {
 })
 
 /* ═══ 相机控制面板状态 ═══ */
-const camPos = reactive({ x: 20, y: 18, z: 25 })
+const camPos = reactive({ x: 25, y: 30, z: 35 })
 const camTarget = reactive({ x: 0, y: 2, z: 0 })
 
 /* ═══ 楼层 ═══ */
@@ -206,7 +249,7 @@ function addLights() {
   fill.position.set(-10, 15, -10)
   scene.add(fill)
   scene.add(new THREE.AmbientLight(0xffffff, 0.4))
-  scene.add(new THREE.GridHelper(50, 50, 0x334155, 0x1e293b))
+  scene.add(new THREE.GridHelper(70, 70, 0x334155, 0x1e293b))
 }
 
 /* ═══ 相机适配 ═══ */
@@ -340,14 +383,14 @@ async function loadGraphData() {
       drawPlan2d()
     }
   } catch (e) {
-    console.error('加载图数据失败', e)
-    ElMessage.warning('加载建筑图数据失败，请检查后端服务')
+    console.error('Failed to load graph data', e)
+    ElMessage.warning('Failed to load building graph data, please check backend service')
   }
 }
 
 /* ═══ 路径计算 ═══ */
 async function onCalculate() {
-  if (!startNode.value) { ElMessage.warning('请选择起点'); return }
+  if (!startNode.value) { ElMessage.warning('Please select a start point'); return }
   computing.value = true
   lastResult.value = null
   try {
@@ -356,6 +399,7 @@ async function onCalculate() {
       startNode: startNode.value,
       floorId: activeFloor.value.id,
       fireMode: fireMode.value,
+      smokeOrigin: simulation.smokeOrigin || undefined,
     })
     lastResult.value = res?.paths ? res : (res?.data || res)
     if (mallBuilder && lastResult.value) {
@@ -365,7 +409,7 @@ async function onCalculate() {
     drawPlan2d()
   } catch (e) {
     console.error('路径计算失败', e)
-    ElMessage.error('逃生路径计算失败: ' + (e.response?.data?.message || e.message))
+    ElMessage.error('Escape path calculation failed: ' + (e.response?.data?.message || e.message))
   } finally {
     computing.value = false
   }
@@ -398,7 +442,305 @@ function onFireModeChange(val) {
 function onClearPath() {
   if (pathRenderer) pathRenderer.clear()
   lastResult.value = null
+  stopSimulation()
   drawPlan2d()
+}
+
+/* ═══ 模拟控制 ═══ */
+const smokeOriginOptions = computed(() => {
+  return graphNodes.value.filter(n => (n.nodeType ?? n.node_type) !== 'exit')
+})
+
+// 当起火点变化时，自动重新计算路径
+watch(() => simulation.smokeOrigin, (newOrigin) => {
+  if (newOrigin && startNode.value) {
+    onCalculate()
+  }
+})
+
+function createPerson() {
+  if (personGroup) {
+    scene.remove(personGroup)
+    personGroup = null
+  }
+
+  personGroup = new THREE.Group()
+  personGroup.name = 'escape-person'
+
+  // 身体
+  const body = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.12, 0.15, 0.35, 8),
+    new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.6 })
+  )
+  body.position.y = 0.35
+  body.name = 'body'
+  personGroup.add(body)
+
+  // 头部
+  const head = new THREE.Mesh(
+    new THREE.SphereGeometry(0.1, 12, 12),
+    new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.5 })
+  )
+  head.position.y = 0.62
+  head.name = 'head'
+  personGroup.add(head)
+
+  // 左腿
+  const leftLeg = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.05, 0.05, 0.3, 6),
+    new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.7 })
+  )
+  leftLeg.position.set(-0.06, 0.15, 0)
+  leftLeg.name = 'leftLeg'
+  personGroup.add(leftLeg)
+
+  // 右腿
+  const rightLeg = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.05, 0.05, 0.3, 6),
+    new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.7 })
+  )
+  rightLeg.position.set(0.06, 0.15, 0)
+  rightLeg.name = 'rightLeg'
+  personGroup.add(rightLeg)
+
+  // 左臂
+  const leftArm = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.035, 0.035, 0.25, 6),
+    new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.6 })
+  )
+  leftArm.position.set(-0.2, 0.38, 0)
+  leftArm.name = 'leftArm'
+  personGroup.add(leftArm)
+
+  // 右臂
+  const rightArm = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.035, 0.035, 0.25, 6),
+    new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.6 })
+  )
+  rightArm.position.set(0.2, 0.38, 0)
+  rightArm.name = 'rightArm'
+  personGroup.add(rightArm)
+
+  personGroup.visible = false
+  scene.add(personGroup)
+}
+
+function createSmoke(originNode) {
+  clearSmoke()
+  if (!originNode) return
+
+  const pos = mallBuilder.nodePositions.get(originNode.nodeKey || originNode.node_key)
+  if (!pos) return
+
+  // 在起火点及相邻节点生成烟雾
+  const originKey = originNode.nodeKey || originNode.node_key
+  const neighbors = mallBuilder._edgeIndex.get(originKey) || []
+  const smokePositions = [pos.clone()]
+
+  for (const nk of neighbors) {
+    const nPos = mallBuilder.nodePositions.get(nk)
+    if (nPos) smokePositions.push(nPos.clone())
+  }
+
+  for (const sp of smokePositions) {
+    const count = 15
+    const particles = []
+    for (let i = 0; i < count; i++) {
+      const size = 0.2 + Math.random() * 0.4
+      const particle = new THREE.Mesh(
+        new THREE.SphereGeometry(size, 8, 8),
+        new THREE.MeshStandardMaterial({
+          color: 0x6b7280,
+          transparent: true,
+          opacity: 0.3 + Math.random() * 0.3,
+          roughness: 1,
+        })
+      )
+      particle.position.set(
+        sp.x + (Math.random() - 0.5) * 2,
+        sp.y + Math.random() * 1.5,
+        sp.z + (Math.random() - 0.5) * 2
+      )
+      particle.userData = {
+        baseY: particle.position.y,
+        speed: 0.3 + Math.random() * 0.5,
+        drift: (Math.random() - 0.5) * 0.02,
+        phase: Math.random() * Math.PI * 2,
+      }
+      scene.add(particle)
+      particles.push(particle)
+    }
+    smokeParticles.push(...particles)
+  }
+}
+
+function clearSmoke() {
+  for (const p of smokeParticles) {
+    scene.remove(p)
+    if (p.geometry) p.geometry.dispose()
+    if (p.material) p.material.dispose()
+  }
+  smokeParticles = []
+}
+
+function startSimulation() {
+  if (!lastResult.value || !lastResult.value.paths.length) {
+    ElMessage.warning('Please calculate escape path first')
+    return
+  }
+
+  const optimalPath = lastResult.value.paths[0]
+  const nodeKeys = optimalPath.nodes || []
+  const points = nodeKeys.map(k => mallBuilder.nodePositions.get(k)).filter(Boolean)
+  if (points.length < 2) return
+
+  simulation.path = points
+  simulation.progress = 0
+  simulation.active = true
+  simulation.paused = false
+
+  createPerson()
+  personGroup.visible = true
+
+  // 创建烟雾
+  if (simulation.smokeOrigin) {
+    const originNode = graphNodes.value.find(n =>
+      (n.nodeKey ?? n.node_key) === simulation.smokeOrigin
+    )
+    if (originNode) createSmoke(originNode)
+  }
+
+  // 开始模拟动画
+  simulationClock.start()
+  animateSimulation()
+}
+
+function animateSimulation() {
+  if (!simulation.active || simulation.paused) return
+
+  simulationAnimId = requestAnimationFrame(animateSimulation)
+
+  const delta = simulationClock.getDelta()
+  const speed = simulation.speed
+  const pathLength = simulation.path.length - 1
+
+  simulation.progress += delta * speed * 0.15
+  if (simulation.progress >= pathLength) {
+    simulation.progress = pathLength
+    simulation.active = false
+  }
+
+  // 计算当前位置
+  const idx = Math.floor(simulation.progress)
+  const t = simulation.progress - idx
+  const p1 = simulation.path[Math.min(idx, pathLength)]
+  const p2 = simulation.path[Math.min(idx + 1, pathLength)]
+
+  if (p1 && p2 && personGroup) {
+    personGroup.position.lerpVectors(p1, p2, t)
+    personGroup.position.y = p1.y + 0.01
+
+    // 面向移动方向
+    const dir = new THREE.Vector3().subVectors(p2, p1).normalize()
+    const angle = Math.atan2(dir.x, dir.z)
+    personGroup.rotation.y = angle
+
+    // 行走动画（腿部摆动）
+    const walkTime = simulationClock.getElapsedTime() * 8 * speed
+    const leftLeg = personGroup.getObjectByName('leftLeg')
+    const rightLeg = personGroup.getObjectByName('rightLeg')
+    const leftArm = personGroup.getObjectByName('leftArm')
+    const rightArm = personGroup.getObjectByName('rightArm')
+
+    if (leftLeg) leftLeg.rotation.x = Math.sin(walkTime) * 0.4
+    if (rightLeg) rightLeg.rotation.x = -Math.sin(walkTime) * 0.4
+    if (leftArm) leftArm.rotation.x = -Math.sin(walkTime) * 0.3
+    if (rightArm) rightArm.rotation.x = Math.sin(walkTime) * 0.3
+  }
+
+  // 更新烟雾动画
+  for (const p of smokeParticles) {
+    const ud = p.userData
+    p.position.y = ud.baseY + Math.sin(simulationClock.getElapsedTime() * ud.speed + ud.phase) * 0.3
+    p.position.x += ud.drift
+    p.material.opacity = 0.2 + Math.sin(simulationClock.getElapsedTime() * 0.5 + ud.phase) * 0.15
+  }
+
+  // 更新指示灯颜色（沿路径的灯变绿，其他变黄）
+  updateIndicatorLightsForSimulation()
+
+  // 自动切换楼层
+  if (personGroup && personGroup.position.y !== undefined) {
+    const currentFloor = Math.round(personGroup.position.y / 4.5) + 1
+    if (currentFloor >= 1 && currentFloor <= 6 && currentFloor !== activeFloorId.value) {
+      activeFloorId.value = currentFloor
+    }
+  }
+}
+
+function updateIndicatorLightsForSimulation() {
+  if (!personGroup || !mallBuilder) return
+
+  const personPos = personGroup.position
+  const allIndicators = mallBuilder.getIndicatorLights()
+
+  for (const [floorId, lights] of allIndicators) {
+    const states = []
+    lights.forEach((ind, idx) => {
+      const dist = ind.position.distanceTo(personPos)
+      let color = COLORS.indicatorYellow
+
+      // 路径附近的灯变绿
+      if (simulation.path.some(p => p.distanceTo(ind.position) < 3)) {
+        color = COLORS.indicatorGreen
+      }
+      // 靠近烟雾的灯变红
+      if (simulation.smokeNodes.some(sn => {
+        const snPos = mallBuilder.nodePositions.get(sn)
+        return snPos && snPos.distanceTo(ind.position) < 4
+      })) {
+        color = COLORS.indicatorRed
+      }
+
+      states.push({ index: idx, color })
+    })
+    mallBuilder.setIndicatorColors(new Map([[floorId, states]]))
+  }
+}
+
+function pauseSimulation() {
+  simulation.paused = !simulation.paused
+  if (!simulation.paused && simulation.active) {
+    simulationClock.start()
+    animateSimulation()
+  }
+}
+
+function resetSimulation() {
+  stopSimulation()
+  simulation.progress = 0
+  simulation.active = false
+  simulation.paused = false
+  if (personGroup) {
+    personGroup.visible = false
+  }
+  mallBuilder?.resetIndicatorColors()
+  clearSmoke()
+}
+
+function stopSimulation() {
+  simulation.active = false
+  simulation.paused = false
+  if (simulationAnimId) {
+    cancelAnimationFrame(simulationAnimId)
+    simulationAnimId = null
+  }
+  if (personGroup) {
+    scene.remove(personGroup)
+    personGroup = null
+  }
+  mallBuilder?.resetIndicatorColors()
+  clearSmoke()
 }
 
 /* ═══ Three.js 初始化 ═══ */
@@ -424,7 +766,7 @@ function initThree() {
   controls.addEventListener('change', syncCamUI)
 
   addLights()
-  camera.position.set(20, 18, 25)
+  camera.position.set(25, 30, 35)
   controls.update()
   syncCamUI()
   onResize()
@@ -483,7 +825,7 @@ function drawPlan2d() {
     ctx.fillStyle = '#94a3b8'
     ctx.font = '16px sans-serif'
     ctx.textAlign = 'center'
-    ctx.fillText('该楼层暂无节点数据', W / 2, H / 2)
+    ctx.fillText('No node data for this floor', W / 2, H / 2)
     return
   }
 
@@ -720,7 +1062,7 @@ function drawPlan2d() {
       ctx.fillStyle = '#22c55e'; ctx.beginPath(); ctx.arc(sx, sy, 6, 0, Math.PI * 2); ctx.fill()
       ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(ex, ey, 6, 0, Math.PI * 2); ctx.fill()
       ctx.fillStyle = '#fff'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
-      ctx.fillText('起', sx, sy); ctx.fillText('终', ex, ey)
+      ctx.fillText('S', sx, sy); ctx.fillText('E', ex, ey)
     })
     ctx.globalAlpha = 1
   }
@@ -730,18 +1072,18 @@ function drawPlan2d() {
   ctx.font = 'bold 18px "Microsoft YaHei", sans-serif'
   ctx.textAlign = 'left'
   ctx.textBaseline = 'top'
-  ctx.fillText(`${fid}F 平面图`, 16, 16)
+  ctx.fillText(`${fid}F Floor Plan`, 16, 16)
 
   // ── 图例 ──
   const legends = [
-    { label: '房间', color: '#60a5fa' },
-    { label: '走廊', color: '#64748b' },
-    { label: '出口', color: '#22c55e' },
-    { label: '楼梯', color: '#fb923c' },
-    { label: '电梯', color: '#a78bfa' },
-    { label: '消防栓', color: '#dc2626' },
-    { label: '监控室', color: '#0ea5e9' },
-    { label: '配电间', color: '#eab308' },
+    { label: 'Room', color: '#60a5fa' },
+    { label: 'Corridor', color: '#64748b' },
+    { label: 'Exit', color: '#22c55e' },
+    { label: 'Stairs', color: '#fb923c' },
+    { label: 'Elevator', color: '#a78bfa' },
+    { label: 'Fire Hydrant', color: '#dc2626' },
+    { label: 'Monitor Room', color: '#0ea5e9' },
+    { label: 'Electrical Room', color: '#eab308' },
   ]
   const lx = W - 16
   ctx.textAlign = 'right'
@@ -769,6 +1111,7 @@ onMounted(() => {
 })
 onUnmounted(() => {
   cancelAnimationFrame(animationId)
+  stopSimulation()
   window.removeEventListener('resize', onResize)
   window.removeEventListener('keydown', onKeyDown)
   window.removeEventListener('keyup', onKeyUp)
@@ -783,6 +1126,11 @@ onUnmounted(() => {
 .floor-page { gap: 16px; }
 .toolbar, .panel-actions { display: flex; gap: 12px; align-items: center; }
 .escape-toolbar { padding: 14px 18px; }
+.simulation-toolbar { padding: 14px 18px; }
+.sim-title { font-size: 14px; font-weight: 700; color: var(--el-text-color-primary); margin-right: 8px; }
+.sim-speed { display: flex; align-items: center; gap: 6px; }
+.sim-speed-label { font-size: 12px; color: var(--el-text-color-secondary); }
+.sim-speed-val { font-size: 12px; color: var(--el-text-color-secondary); width: 30px; }
 .fire-switch { display: flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 8px; border: 1px solid transparent; transition: .2s; }
 .fire-switch.active { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.25); }
 .fire-label { font-size: 13px; font-weight: 600; white-space: nowrap; }
