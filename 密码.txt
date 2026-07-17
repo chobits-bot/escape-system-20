@@ -1,7 +1,19 @@
 mysql：
 root
-123456
+aiot123456
 
 emqx：
 admin
 public
+
+服务器：
+ubuntu
+ubuntu@0505
+
+网页 http://42.193.218.29:5173 
+admin
+123456
+
+云服务器：（邮箱登录）
+136201155@qq.com
+qq@136201155

@@ -10,7 +10,7 @@ logger:
 
 database:
   default:
-    link: "mysql:root:aiot123@tcp(mysql:3306)/aiot?parseTime=true&charset=utf8mb4&loc=Local"
+    link: "mysql:root:aiot123456@tcp(mysql:3306)/aiot?parseTime=true&charset=utf8mb4&loc=Local"
     maxOpen: 20
     maxIdle: 10
 
@@ -46,3 +46,7 @@ mail:
 
 jwt:
   secret: "aiot-jwt-secret-change-in-production"
+
+algorithm:
+  url: "http://host.docker.internal:8090"
+  timeout: 30

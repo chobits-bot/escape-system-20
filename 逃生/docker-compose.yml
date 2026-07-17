@@ -69,24 +69,30 @@ services:
     container_name: aiot-backend
     ports:
       - "8080:8080"
+    volumes:
+      - ./aiot/aiot-v2/manifest/config:/app/manifest/config
     depends_on:
       - mysql
       - redis
       - influxdb
       - emqx
+    network_mode: host
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: always
 
   # ==================== Vue 前端 ====================
-  aiot-frontend:
-    build:
-      context: ./aiot/aiot-vue
-      dockerfile: Dockerfile
-    container_name: aiot-frontend
-    ports:
-      - "5173:80"
-    depends_on:
-      - aiot-backend
-    restart: always
+  # 已改为在宿主机直接运行 npm run dev，不再通过 Docker 启动
+  # aiot-frontend:
+  #   build:
+  #     context: ./aiot/aiot-vue
+  #     dockerfile: Dockerfile
+  #   container_name: aiot-frontend
+  #   ports:
+  #     - "5173:80"
+  #   depends_on:
+  #     - aiot-backend
+  #   restart: always
 
 volumes:
   emqx_data:

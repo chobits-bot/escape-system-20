@@ -2,7 +2,7 @@
   <div class="page floor-page">
     <div class="page-header">
       <div>
-        <div class="page-title-text">Floor Model</div>
+        <div class="page-title-text">{{ ft('floor.title') }}</div>
       </div>
       <div class="toolbar">
         <el-radio-group v-model="viewMode" size="small">
@@ -16,32 +16,35 @@
     <div class="panel escape-toolbar">
       <div class="toolbar-row">
         <el-select v-model="selectedAlgo" size="small" style="width:140px">
-          <el-option label="Ant Colony (ACO)" value="aco" />
-          <el-option label="Particle Swarm (PSO)" value="pso" disabled />
-          <el-option label="Simulated Annealing (SA)" value="sa" disabled />
-          <el-option label="Genetic Algorithm (GA)" value="ga" disabled />
+          <el-option :label="ft('floor.antColony')" value="aco" />
+          <el-option :label="ft('floor.particleSwarm')" value="pso" disabled />
+          <el-option :label="ft('floor.simulatedAnnealing')" value="sa" disabled />
+          <el-option :label="ft('floor.geneticAlgorithm')" value="ga" disabled />
         </el-select>
         <div class="fire-switch" :class="{ active: fireMode }">
           <el-switch v-model="fireMode" size="small" active-color="#ef4444" @change="onFireModeChange" />
-          <span class="fire-label">🔥 Fire Mode</span>
-          <el-tooltip v-if="fireMode" content="Fire mode enabled: all elevators disabled, stairs only" placement="bottom">
-            <el-tag type="danger" size="small" effect="dark">Elevators Disabled</el-tag>
+          <span class="fire-label">🔥 {{ ft('floor.fireMode') }}</span>
+          <el-tooltip v-if="fireMode" :content="ft('floor.fireModeTip')" placement="bottom">
+            <el-tag type="danger" size="small" effect="dark">{{ ft('floor.elevatorsDisabled') }}</el-tag>
           </el-tooltip>
         </div>
-        <el-select v-model="startNode" size="small" placeholder="Select Start Point" style="width:200px" filterable>
+        <el-select v-model="startNode" size="small" :placeholder="ft('floor.selectStart')" style="width:200px" filterable>
           <el-option v-for="n in availableStartNodes" :key="n.nodeKey || n.node_key" :label="`${n.name} (${n.nodeKey || n.node_key})`" :value="n.nodeKey || n.node_key" />
         </el-select>
-        <el-button type="danger" size="small" :loading="computing" @click="onCalculate">{{ fireMode ? '🔥 Calculate Escape Path' : 'Calculate Path' }}</el-button>
-        <el-button size="small" @click="onClearPath">Clear Path</el-button>
-        <el-tag v-if="lastResult" type="success" size="small">Computed in {{ lastResult.computeTimeMs || lastResult.compute_time_ms }}ms · {{ lastResult.paths.length }} paths</el-tag>
+        <el-button type="danger" size="small" :loading="computing" @click="onCalculate">{{ fireMode ? ft('floor.calculatePathFire') : ft('floor.calculatePath') }}</el-button>
+        <el-button size="small" @click="onClearPath">{{ ft('floor.clearPath') }}</el-button>
+        <el-button size="small" :type="placePersonMode ? 'warning' : ''" @click="togglePlacePersonMode">
+          {{ placePersonMode ? ft('floor.confirmPlace') : ft('floor.placePerson') }}
+        </el-button>
+        <el-tag v-if="lastResult" type="success" size="small">{{ ft('floor.computedIn')(lastResult.computeTimeMs || lastResult.compute_time_ms, lastResult.paths.length) }}</el-tag>
       </div>
       <!-- 路径结果摘要 -->
       <div v-if="lastResult && lastResult.paths.length" class="path-results">
         <div v-for="(p, i) in lastResult.paths" :key="i" class="path-item">
-          <el-tag size="small" :type="i === 0 ? 'danger' : 'info'">{{ i === 0 ? 'Optimal' : `#${i+1}` }}</el-tag>
+          <el-tag size="small" :type="i === 0 ? 'danger' : 'info'">{{ i === 0 ? ft('floor.optimal') : `#${i+1}` }}</el-tag>
           <span class="path-exit">→ {{ p.exitName || p.exit_name }}</span>
-          <span class="path-cost">Cost {{ p.totalCost || p.total_cost }}</span>
-          <span class="path-time">≈ {{ p.estimatedTime || p.estimated_time }}</span>
+          <span class="path-cost">{{ ft('floor.cost') }} {{ p.totalCost || p.total_cost }}</span>
+          <span class="path-time">{{ ft('floor.estimatedTime') }} {{ p.estimatedTime || p.estimated_time }}</span>
         </div>
       </div>
     </div>
@@ -49,19 +52,19 @@
     <!-- 模拟控制工具栏 -->
     <div class="panel simulation-toolbar">
       <div class="toolbar-row">
-        <span class="sim-title">Simulation</span>
-        <el-select v-model="simulation.smokeOrigin" size="small" placeholder="Smoke Origin" style="width:200px" clearable filterable>
+        <span class="sim-title">{{ ft('floor.simulation') }}</span>
+        <el-select v-model="simulation.smokeOrigin" size="small" :placeholder="ft('floor.smokeOrigin')" style="width:200px" clearable filterable>
           <el-option v-for="n in smokeOriginOptions" :key="n.nodeKey || n.node_key" :label="`${n.name}`" :value="n.nodeKey || n.node_key" />
         </el-select>
         <el-button type="success" size="small" :disabled="simulation.active" @click="startSimulation">
-          ▶ Start
+          {{ ft('floor.start') }}
         </el-button>
         <el-button size="small" :disabled="!simulation.active" @click="pauseSimulation">
-          {{ simulation.paused ? '▶ Resume' : '⏸ Pause' }}
+          {{ simulation.paused ? ft('floor.resume') : ft('floor.pause') }}
         </el-button>
-        <el-button size="small" @click="resetSimulation">↻ Reset</el-button>
+        <el-button size="small" @click="resetSimulation">{{ ft('floor.reset') }}</el-button>
         <div class="sim-speed">
-          <span class="sim-speed-label">Speed</span>
+          <span class="sim-speed-label">{{ ft('floor.speed') }}</span>
           <el-slider v-model="simulation.speed" :min="0.5" :max="3" :step="0.1" size="small" style="width:100px" />
           <span class="sim-speed-val">{{ simulation.speed.toFixed(1) }}x</span>
         </div>
@@ -70,10 +73,10 @@
 
     <div class="panel floor-panel">
       <div class="panel-header">
-        <span class="panel-title">Floor Browser</span>
+        <span class="panel-title">{{ ft('floor.floorBrowser') }}</span>
         <div class="panel-actions">
-          <el-tag :type="graphLoaded ? 'success' : 'info'">{{ graphLoaded ? `Loaded ${graphNodes.length} nodes` : 'Loading...' }}</el-tag>
-          <el-tag type="warning">Current: {{ activeFloor.name }}</el-tag>
+          <el-tag :type="graphLoaded ? 'success' : 'info'">{{ graphLoaded ? ft('floor.loadedNodes')(graphNodes.length) : ft('floor.loading') }}</el-tag>
+          <el-tag type="warning">{{ ft('floor.current') }}: {{ activeFloor.name }}</el-tag>
         </div>
       </div>
 
@@ -83,17 +86,17 @@
         <!-- 相机控制面板 -->
         <div class="cam-panel">
           <div class="cam-section">
-            <div class="cam-title">View Presets</div>
+            <div class="cam-title">{{ ft('floor.viewPresets') }}</div>
             <div class="cam-presets">
-              <el-button size="small" @click="setCamPreset('perspective')">Perspective</el-button>
-              <el-button size="small" @click="setCamPreset('top')">Top</el-button>
-              <el-button size="small" @click="setCamPreset('front')">Front</el-button>
-              <el-button size="small" @click="setCamPreset('side')">Side</el-button>
-              <el-button size="small" @click="setCamPreset('fit')">Fit</el-button>
+              <el-button size="small" @click="setCamPreset('perspective')">{{ ft('floor.perspective') }}</el-button>
+              <el-button size="small" @click="setCamPreset('top')">{{ ft('floor.top') }}</el-button>
+              <el-button size="small" @click="setCamPreset('front')">{{ ft('floor.front') }}</el-button>
+              <el-button size="small" @click="setCamPreset('side')">{{ ft('floor.side') }}</el-button>
+              <el-button size="small" @click="setCamPreset('fit')">{{ ft('floor.fit') }}</el-button>
             </div>
           </div>
           <div class="cam-section">
-            <div class="cam-title">Position (X / Y / Z)</div>
+            <div class="cam-title">{{ ft('floor.position') }}</div>
             <div class="cam-row">
               <span class="cam-axis x">X</span>
               <el-slider v-model="camPos.x" :min="-60" :max="60" :step="0.5" size="small" @input="applyCamPos" />
@@ -111,7 +114,7 @@
             </div>
           </div>
           <div class="cam-section">
-            <div class="cam-title">Target Focus</div>
+            <div class="cam-title">{{ ft('floor.targetFocus') }}</div>
             <div class="cam-row">
               <span class="cam-axis x">X</span>
               <el-slider v-model="camTarget.x" :min="-30" :max="30" :step="0.5" size="small" @input="applyCamTarget" />
@@ -128,7 +131,7 @@
               <span class="cam-val">{{ camTarget.z.toFixed(1) }}</span>
             </div>
           </div>
-          <div class="cam-hint">Left-click rotate · Right-click pan · Scroll zoom<br/>WASD / Arrow keys to move camera</div>
+          <div class="cam-hint">{{ ft('floor.camHint') }}</div>
         </div>
       </div>
 
@@ -155,6 +158,46 @@ import { ElMessage } from 'element-plus'
 import { getGraphNodes, getGraphEdges, calculateEscape } from '@/api/escape'
 import { MallBuilder } from '@/utils/mallBuilder'
 import { PathRenderer } from '@/utils/pathRenderer'
+import { useSettingsStore } from '@/stores/settings'
+import { messages } from '@/locales'
+
+const settings = useSettingsStore()
+
+/* ═══ 国际化 ═══ */
+function t(key) {
+  const lang = settings.language
+  const keys = key.split('.')
+  let result = messages[lang]
+  for (const k of keys) {
+    if (result && typeof result === 'object' && k in result) {
+      result = result[k]
+    } else {
+      return key
+    }
+  }
+  if (typeof result === 'function') return result
+  return result
+}
+
+/* 让模板中的 t() 响应语言变化 */
+const ft = computed(() => {
+  // 依赖 language 实现响应式
+  const _ = settings.language
+  return (key) => {
+    const lang = settings.language
+    const keys = key.split('.')
+    let result = messages[lang]
+    for (const k of keys) {
+      if (result && typeof result === 'object' && k in result) {
+        result = result[k]
+      } else {
+        return key
+      }
+    }
+    if (typeof result === 'function') return result
+    return result
+  }
+})
 
 const COLORS = {
   indicatorGreen: 0x22c55e,
@@ -167,6 +210,9 @@ const viewMode = ref('3d')
 const canvasWrap = ref()
 const plan2dCanvas = ref()
 const graphLoaded = ref(false)
+const placePersonMode = ref(false)
+let raycaster = null
+let pointer = null
 const graphNodes = ref([])
 const graphEdges = ref([])
 const selectedAlgo = ref('aco')
@@ -390,7 +436,7 @@ async function loadGraphData() {
 
 /* ═══ 路径计算 ═══ */
 async function onCalculate() {
-  if (!startNode.value) { ElMessage.warning('Please select a start point'); return }
+  if (!startNode.value) { ElMessage.warning(ft.value('floor.pleaseSelectStart')); return }
   computing.value = true
   lastResult.value = null
   try {
@@ -409,7 +455,7 @@ async function onCalculate() {
     drawPlan2d()
   } catch (e) {
     console.error('路径计算失败', e)
-    ElMessage.error('Escape path calculation failed: ' + (e.response?.data?.message || e.message))
+    ElMessage.error('逃生路径计算失败: ' + (e.response?.data?.message || e.message))
   } finally {
     computing.value = false
   }
@@ -467,59 +513,70 @@ function createPerson() {
   personGroup = new THREE.Group()
   personGroup.name = 'escape-person'
 
-  // 身体
-  const body = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.12, 0.15, 0.35, 8),
-    new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.6 })
-  )
-  body.position.y = 0.35
-  body.name = 'body'
-  personGroup.add(body)
+  // 放大2倍的原始风格
+  const s = 2.0
+  const bodyColor = 0x3b82f6
+  const headColor = 0xfbbf24
+  const legColor = 0x1e293b
 
   // 头部
   const head = new THREE.Mesh(
-    new THREE.SphereGeometry(0.1, 12, 12),
-    new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.5 })
+    new THREE.SphereGeometry(0.1 * s, 12, 12),
+    new THREE.MeshStandardMaterial({ color: headColor, roughness: 0.5, emissive: headColor, emissiveIntensity: 0.3 })
   )
-  head.position.y = 0.62
+  head.position.y = 0.62 * s
   head.name = 'head'
   personGroup.add(head)
 
+  // 身体
+  const body = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.12 * s, 0.15 * s, 0.35 * s, 8),
+    new THREE.MeshStandardMaterial({ color: bodyColor, roughness: 0.6, emissive: bodyColor, emissiveIntensity: 0.2 })
+  )
+  body.position.y = 0.35 * s
+  body.name = 'body'
+  personGroup.add(body)
+
   // 左腿
   const leftLeg = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.05, 0.05, 0.3, 6),
-    new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.7 })
+    new THREE.CylinderGeometry(0.05 * s, 0.05 * s, 0.3 * s, 6),
+    new THREE.MeshStandardMaterial({ color: legColor, roughness: 0.7 })
   )
-  leftLeg.position.set(-0.06, 0.15, 0)
+  leftLeg.position.set(-0.06 * s, 0.15 * s, 0)
   leftLeg.name = 'leftLeg'
   personGroup.add(leftLeg)
 
   // 右腿
   const rightLeg = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.05, 0.05, 0.3, 6),
-    new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.7 })
+    new THREE.CylinderGeometry(0.05 * s, 0.05 * s, 0.3 * s, 6),
+    new THREE.MeshStandardMaterial({ color: legColor, roughness: 0.7 })
   )
-  rightLeg.position.set(0.06, 0.15, 0)
+  rightLeg.position.set(0.06 * s, 0.15 * s, 0)
   rightLeg.name = 'rightLeg'
   personGroup.add(rightLeg)
 
   // 左臂
   const leftArm = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.035, 0.035, 0.25, 6),
-    new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.6 })
+    new THREE.CylinderGeometry(0.035 * s, 0.035 * s, 0.25 * s, 6),
+    new THREE.MeshStandardMaterial({ color: bodyColor, roughness: 0.6 })
   )
-  leftArm.position.set(-0.2, 0.38, 0)
+  leftArm.position.set(-0.2 * s, 0.38 * s, 0)
   leftArm.name = 'leftArm'
   personGroup.add(leftArm)
 
   // 右臂
   const rightArm = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.035, 0.035, 0.25, 6),
-    new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.6 })
+    new THREE.CylinderGeometry(0.035 * s, 0.035 * s, 0.25 * s, 6),
+    new THREE.MeshStandardMaterial({ color: bodyColor, roughness: 0.6 })
   )
-  rightArm.position.set(0.2, 0.38, 0)
+  rightArm.position.set(0.2 * s, 0.38 * s, 0)
   rightArm.name = 'rightArm'
   personGroup.add(rightArm)
+
+  // 发光标记
+  const glow = new THREE.PointLight(0x3b82f6, 2, 6)
+  glow.position.y = 0.6 * s
+  personGroup.add(glow)
 
   personGroup.visible = false
   scene.add(personGroup)
@@ -532,46 +589,82 @@ function createSmoke(originNode) {
   const pos = mallBuilder.nodePositions.get(originNode.nodeKey || originNode.node_key)
   if (!pos) return
 
-  // 在起火点及相邻节点生成烟雾
+  // 起火点火焰效果
+  const fireColors = [0xff4500, 0xff6600, 0xff8c00, 0xffa500, 0xffcc00]
   const originKey = originNode.nodeKey || originNode.node_key
   const neighbors = mallBuilder._edgeIndex.get(originKey) || []
   const smokePositions = [pos.clone()]
-
   for (const nk of neighbors) {
     const nPos = mallBuilder.nodePositions.get(nk)
     if (nPos) smokePositions.push(nPos.clone())
   }
 
   for (const sp of smokePositions) {
-    const count = 15
-    const particles = []
-    for (let i = 0; i < count; i++) {
+    // 火焰粒子（起火点附近）
+    for (let i = 0; i < 20; i++) {
+      const size = 0.15 + Math.random() * 0.35
+      const color = fireColors[Math.floor(Math.random() * fireColors.length)]
+      const particle = new THREE.Mesh(
+        new THREE.SphereGeometry(size, 8, 8),
+        new THREE.MeshStandardMaterial({
+          color,
+          emissive: color,
+          emissiveIntensity: 0.8 + Math.random() * 0.2,
+          transparent: true,
+          opacity: 0.7 + Math.random() * 0.3,
+        })
+      )
+      const spread = sp === pos ? 1.0 : 1.5
+      particle.position.set(
+        sp.x + (Math.random() - 0.5) * spread,
+        sp.y + Math.random() * 0.8,
+        sp.z + (Math.random() - 0.5) * spread
+      )
+      particle.userData = {
+        baseY: particle.position.y,
+        speed: 0.8 + Math.random() * 1.2,
+        drift: (Math.random() - 0.5) * 0.03,
+        phase: Math.random() * Math.PI * 2,
+        isFire: true,
+      }
+      scene.add(particle)
+      smokeParticles.push(particle)
+    }
+
+    // 烟雾粒子（火焰上方）
+    for (let i = 0; i < 8; i++) {
       const size = 0.2 + Math.random() * 0.4
       const particle = new THREE.Mesh(
         new THREE.SphereGeometry(size, 8, 8),
         new THREE.MeshStandardMaterial({
-          color: 0x6b7280,
+          color: 0x4a4a4a,
           transparent: true,
-          opacity: 0.3 + Math.random() * 0.3,
+          opacity: 0.25 + Math.random() * 0.25,
           roughness: 1,
         })
       )
       particle.position.set(
         sp.x + (Math.random() - 0.5) * 2,
-        sp.y + Math.random() * 1.5,
+        sp.y + 1.0 + Math.random() * 2.0,
         sp.z + (Math.random() - 0.5) * 2
       )
       particle.userData = {
         baseY: particle.position.y,
-        speed: 0.3 + Math.random() * 0.5,
+        speed: 0.2 + Math.random() * 0.4,
         drift: (Math.random() - 0.5) * 0.02,
         phase: Math.random() * Math.PI * 2,
+        isFire: false,
       }
       scene.add(particle)
-      particles.push(particle)
+      smokeParticles.push(particle)
     }
-    smokeParticles.push(...particles)
   }
+
+  // 火焰点光源
+  const fireLight = new THREE.PointLight(0xff4500, 4, 8)
+  fireLight.position.set(pos.x, pos.y + 0.5, pos.z)
+  scene.add(fireLight)
+  smokeParticles.push(fireLight)
 }
 
 function clearSmoke() {
@@ -585,7 +678,7 @@ function clearSmoke() {
 
 function startSimulation() {
   if (!lastResult.value || !lastResult.value.paths.length) {
-    ElMessage.warning('Please calculate escape path first')
+    ElMessage.warning(ft.value('floor.pleaseCalcFirst'))
     return
   }
 
@@ -602,16 +695,28 @@ function startSimulation() {
   createPerson()
   personGroup.visible = true
 
-  // 创建烟雾
+  // 创建烟雾并设置烟雾节点列表
+  simulation.smokeNodes = []
   if (simulation.smokeOrigin) {
     const originNode = graphNodes.value.find(n =>
       (n.nodeKey ?? n.node_key) === simulation.smokeOrigin
     )
-    if (originNode) createSmoke(originNode)
+    if (originNode) {
+      createSmoke(originNode)
+      // 起火点及相邻节点都算烟雾区域
+      const originKey = originNode.nodeKey || originNode.node_key
+      simulation.smokeNodes.push(originKey)
+      const neighbors = mallBuilder._edgeIndex.get(originKey) || []
+      simulation.smokeNodes.push(...neighbors)
+    }
   }
 
   // 开始模拟动画
   simulationClock.start()
+  simulationClock.getDelta() // 重置 delta 避免跳帧
+  // 高亮起点所在楼层
+  const startFloor = Math.round(points[0].y / 4.5) + 1
+  mallBuilder.highlightFloor(startFloor)
   animateSimulation()
 }
 
@@ -628,6 +733,7 @@ function animateSimulation() {
   if (simulation.progress >= pathLength) {
     simulation.progress = pathLength
     simulation.active = false
+    mallBuilder?.resetOpacity()
   }
 
   // 计算当前位置
@@ -658,53 +764,129 @@ function animateSimulation() {
     if (rightArm) rightArm.rotation.x = Math.sin(walkTime) * 0.3
   }
 
-  // 更新烟雾动画
+  // 更新烟雾/火焰动画
+  const elapsed = simulationClock.getElapsedTime()
   for (const p of smokeParticles) {
     const ud = p.userData
-    p.position.y = ud.baseY + Math.sin(simulationClock.getElapsedTime() * ud.speed + ud.phase) * 0.3
-    p.position.x += ud.drift
-    p.material.opacity = 0.2 + Math.sin(simulationClock.getElapsedTime() * 0.5 + ud.phase) * 0.15
+    if (!ud || ud.isFire === undefined) {
+      // 光源：闪烁效果
+      if (p.isLight && p.color) {
+        p.intensity = 3 + Math.sin(elapsed * 6) * 1.5
+      }
+      continue
+    }
+    if (ud.isFire) {
+      // 火焰粒子：向上跳动 + 闪烁
+      p.position.y = ud.baseY + Math.abs(Math.sin(elapsed * ud.speed * 3 + ud.phase)) * 0.6
+      p.position.x += ud.drift * 2
+      if (p.material) p.material.opacity = 0.5 + Math.sin(elapsed * 5 + ud.phase) * 0.4
+      p.scale.setScalar(0.8 + Math.sin(elapsed * 4 + ud.phase) * 0.3)
+    } else {
+      // 烟雾粒子：缓慢上升
+      p.position.y = ud.baseY + Math.sin(elapsed * ud.speed + ud.phase) * 0.5
+      p.position.x += ud.drift
+      if (p.material) p.material.opacity = 0.15 + Math.sin(elapsed * 0.5 + ud.phase) * 0.1
+    }
   }
 
   // 更新指示灯颜色（沿路径的灯变绿，其他变黄）
   updateIndicatorLightsForSimulation()
 
-  // 自动切换楼层
+  // 自动切换楼层并高亮（每帧更新）
   if (personGroup && personGroup.position.y !== undefined) {
     const currentFloor = Math.round(personGroup.position.y / 4.5) + 1
-    if (currentFloor >= 1 && currentFloor <= 6 && currentFloor !== activeFloorId.value) {
-      activeFloorId.value = currentFloor
+    if (currentFloor >= 1 && currentFloor <= 6) {
+      if (currentFloor !== activeFloorId.value) {
+        activeFloorId.value = currentFloor
+      }
+      mallBuilder.highlightFloor(currentFloor)
     }
   }
 }
 
+let arrowMeshes = []
+
 function updateIndicatorLightsForSimulation() {
   if (!personGroup || !mallBuilder) return
 
-  const personPos = personGroup.position
+  // 清除旧箭头
+  for (const arrow of arrowMeshes) {
+    scene.remove(arrow)
+  }
+  arrowMeshes = []
+
   const allIndicators = mallBuilder.getIndicatorLights()
+  const statesMap = new Map()
 
   for (const [floorId, lights] of allIndicators) {
     const states = []
-    lights.forEach((ind, idx) => {
-      const dist = ind.position.distanceTo(personPos)
-      let color = COLORS.indicatorYellow
+    lights.forEach(function (ind, idx) {
+      let color = COLORS.indicatorGreen
+      let showArrow = false
+      let arrowDir = null
 
-      // 路径附近的灯变绿
-      if (simulation.path.some(p => p.distanceTo(ind.position) < 3)) {
-        color = COLORS.indicatorGreen
+      // 找路径上最近的线段
+      let nearestPathIdx = -1
+      let nearestDist = Infinity
+      for (let i = 0; i < simulation.path.length - 1; i++) {
+        const p1 = simulation.path[i]
+        const p2 = simulation.path[i + 1]
+        const d1 = ind.position.distanceTo(p1)
+        const d2 = ind.position.distanceTo(p2)
+        const segDist = Math.min(d1, d2)
+        if (segDist < nearestDist) {
+          nearestDist = segDist
+          nearestPathIdx = i
+        }
       }
-      // 靠近烟雾的灯变红
-      if (simulation.smokeNodes.some(sn => {
+
+      // 路径附近：显示绿色发光箭头
+      if (nearestDist < 5 && nearestPathIdx >= 0) {
+        showArrow = true
+        const p1 = simulation.path[nearestPathIdx]
+        const p2 = simulation.path[Math.min(nearestPathIdx + 1, simulation.path.length - 1)]
+        arrowDir = new THREE.Vector3().subVectors(p2, p1).normalize()
+      }
+
+      // 靠近起火点：红色
+      for (let s = 0; s < simulation.smokeNodes.length; s++) {
+        const sn = simulation.smokeNodes[s]
         const snPos = mallBuilder.nodePositions.get(sn)
-        return snPos && snPos.distanceTo(ind.position) < 4
-      })) {
-        color = COLORS.indicatorRed
+        if (snPos && snPos.distanceTo(ind.position) < 4) {
+          color = COLORS.indicatorRed
+          showArrow = false
+          break
+        }
       }
 
-      states.push({ index: idx, color })
+      states.push({ index: idx, color: color, showArrow: showArrow, arrowDir: arrowDir })
     })
-    mallBuilder.setIndicatorColors(new Map([[floorId, states]]))
+    statesMap.set(floorId, states)
+  }
+
+  mallBuilder.setIndicatorColors(statesMap)
+
+  // 起火点附近吸顶灯亮起
+  if (simulation.smokeNodes.length > 0) {
+    const ceilingLights = mallBuilder.getCeilingLights()
+    const ceilingStates = new Map()
+    for (const [floorId, lights] of ceilingLights) {
+      const states = []
+      lights.forEach(function (cl, idx) {
+        let brightness = 0.3
+        for (let s = 0; s < simulation.smokeNodes.length; s++) {
+          const sn = simulation.smokeNodes[s]
+          const snPos = mallBuilder.nodePositions.get(sn)
+          if (snPos && snPos.distanceTo(cl.position) < 6) {
+            brightness = 1.0
+            break
+          }
+        }
+        states.push({ index: idx, brightness: brightness })
+      })
+      ceilingStates.set(floorId, states)
+    }
+    mallBuilder.setCeilingLightBrightness(ceilingStates)
   }
 }
 
@@ -724,7 +906,6 @@ function resetSimulation() {
   if (personGroup) {
     personGroup.visible = false
   }
-  mallBuilder?.resetIndicatorColors()
   clearSmoke()
 }
 
@@ -739,8 +920,88 @@ function stopSimulation() {
     scene.remove(personGroup)
     personGroup = null
   }
+  // 清除方向箭头
+  for (const arrow of arrowMeshes) {
+    scene.remove(arrow)
+  }
+  arrowMeshes = []
   mallBuilder?.resetIndicatorColors()
+  mallBuilder?.resetCeilingLightBrightness()
+  mallBuilder?.resetCeilingLightBrightness()
+  mallBuilder?.resetOpacity()
   clearSmoke()
+}
+
+/* ═══ 点击放置小人 ═══ */
+function togglePlacePersonMode() {
+  placePersonMode.value = !placePersonMode.value
+  if (!placePersonMode.value) {
+    ElMessage.info(ft.value('floor.placeModeOff'))
+  } else {
+    ElMessage.info(ft.value('floor.placeModeOn'))
+  }
+}
+
+function onCanvasClick(event) {
+  if (!placePersonMode.value || !scene || !camera) return
+
+  const rect = renderer.domElement.getBoundingClientRect()
+  pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
+  pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
+
+  raycaster.setFromCamera(pointer, camera)
+
+  // 找到最近的节点位置
+  let nearestNode = null
+  let minDist = Infinity
+  for (const [key, pos] of mallBuilder.nodePositions) {
+    const node = mallBuilder._nodeMap.get(key)
+    if (!node) continue
+    // 创建一个小球作为检测目标
+    const sphere = new THREE.Sphere(0.5)
+    const ray = new THREE.Ray()
+    raycaster.ray.intersectSphere(sphere, new THREE.Vector3())
+    const dist = raycaster.ray.distanceToPoint(pos)
+    if (dist < minDist && dist < 3) {
+      minDist = dist
+      nearestNode = node
+    }
+  }
+
+  // 如果没找到精确匹配，用投影方式找最近节点
+  if (!nearestNode) {
+    const planeNormal = new THREE.Vector3(0, 1, 0)
+    const plane = new THREE.Plane(planeNormal, 0)
+    const intersection = new THREE.Vector3()
+    raycaster.ray.intersectPlane(plane, intersection)
+    if (intersection) {
+      for (const [key, pos] of mallBuilder.nodePositions) {
+        const node = mallBuilder._nodeMap.get(key)
+        if (!node) continue
+        const dist = intersection.distanceTo(pos)
+        if (dist < minDist) {
+          minDist = dist
+          nearestNode = node
+        }
+      }
+    }
+  }
+
+  if (nearestNode) {
+    // 放置小人
+    createPerson()
+    personGroup.visible = true
+    personGroup.position.set(nearestNode.x, nearestNode.y + 0.01, nearestNode.z)
+
+    // 更新起点选择
+    startNode.value = nearestNode.nodeKey
+    ElMessage.success(ft.value('floor.placedSuccess')(nearestNode.name))
+
+    // 退出放置模式
+    placePersonMode.value = false
+  } else {
+    ElMessage.warning(ft.value('floor.placeFailed'))
+  }
 }
 
 /* ═══ Three.js 初始化 ═══ */
@@ -762,6 +1023,10 @@ function initThree() {
   controls = new OrbitControls(camera, renderer.domElement)
   controls.enableDamping = true
   controls.dampingFactor = 0.08
+
+  // 初始化射线检测
+  raycaster = new THREE.Raycaster()
+  pointer = new THREE.Vector2()
   controls.screenSpacePanning = true
   controls.addEventListener('change', syncCamUI)
 
@@ -825,7 +1090,7 @@ function drawPlan2d() {
     ctx.fillStyle = '#94a3b8'
     ctx.font = '16px sans-serif'
     ctx.textAlign = 'center'
-    ctx.fillText('No node data for this floor', W / 2, H / 2)
+    ctx.fillText(ft.value('floor.noNodeData'), W / 2, H / 2)
     return
   }
 
@@ -1062,7 +1327,7 @@ function drawPlan2d() {
       ctx.fillStyle = '#22c55e'; ctx.beginPath(); ctx.arc(sx, sy, 6, 0, Math.PI * 2); ctx.fill()
       ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(ex, ey, 6, 0, Math.PI * 2); ctx.fill()
       ctx.fillStyle = '#fff'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
-      ctx.fillText('S', sx, sy); ctx.fillText('E', ex, ey)
+      ctx.fillText(ft.value('floor.startLabel'), sx, sy); ctx.fillText(ft.value('floor.exitLabel'), ex, ey)
     })
     ctx.globalAlpha = 1
   }
@@ -1072,18 +1337,19 @@ function drawPlan2d() {
   ctx.font = 'bold 18px "Arial", "Segoe UI", "Helvetica Neue", sans-serif'
   ctx.textAlign = 'left'
   ctx.textBaseline = 'top'
-  ctx.fillText(`${fid}F Floor Plan`, 16, 16)
+  ctx.fillText(ft.value('floor.floorPlan')(fid), 16, 16)
 
   // ── 图例 ──
+  const leg = ft.value('floor.legend')
   const legends = [
-    { label: 'Room', color: '#60a5fa' },
-    { label: 'Corridor', color: '#64748b' },
-    { label: 'Exit', color: '#22c55e' },
-    { label: 'Stairs', color: '#fb923c' },
-    { label: 'Elevator', color: '#a78bfa' },
-    { label: 'Fire Hydrant', color: '#dc2626' },
-    { label: 'Monitor Room', color: '#0ea5e9' },
-    { label: 'Electrical Room', color: '#eab308' },
+    { label: leg.room, color: '#60a5fa' },
+    { label: leg.corridor, color: '#64748b' },
+    { label: leg.exit, color: '#22c55e' },
+    { label: leg.stairs, color: '#fb923c' },
+    { label: leg.elevator, color: '#a78bfa' },
+    { label: leg.fireHydrant, color: '#dc2626' },
+    { label: leg.monitorRoom, color: '#0ea5e9' },
+    { label: leg.electricalRoom, color: '#eab308' },
   ]
   const lx = W - 16
   ctx.textAlign = 'right'
@@ -1108,6 +1374,10 @@ onMounted(() => {
   window.addEventListener('resize', onResize)
   window.addEventListener('keydown', onKeyDown)
   window.addEventListener('keyup', onKeyUp)
+  // 点击放置小人
+  if (renderer) {
+    renderer.domElement.addEventListener('click', onCanvasClick)
+  }
 })
 onUnmounted(() => {
   cancelAnimationFrame(animationId)
@@ -1115,6 +1385,9 @@ onUnmounted(() => {
   window.removeEventListener('resize', onResize)
   window.removeEventListener('keydown', onKeyDown)
   window.removeEventListener('keyup', onKeyUp)
+  if (renderer) {
+    renderer.domElement.removeEventListener('click', onCanvasClick)
+  }
   if (mallBuilder) mallBuilder.clear()
   if (pathRenderer) pathRenderer.clear()
   controls?.dispose()
