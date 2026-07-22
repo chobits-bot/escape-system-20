@@ -195,9 +195,9 @@ function setTrendChart(data) {
   if (!tChart) return
   tChart.setOption({
     backgroundColor: 'transparent',
-    grid: { top: 24, right: 20, bottom: 36, left: 48 },
+    grid: { top: 44, right: 20, bottom: 36, left: 48 },
     tooltip: { trigger: 'axis' },
-    xAxis: { type: 'category', data: data.map(item => item.time || ''), axisLabel: { color: '#64748b' } },
+    xAxis: { type: 'category', data: data.map(item => item.time || ''), axisLabel: { color: '#64748b', rotate: 30 } },
     yAxis: { type: 'value', axisLabel: { color: '#64748b' }, splitLine: { lineStyle: { color: '#1e345633' } } },
     series: [{
       name: currentTrendLabel.value,
@@ -211,6 +211,16 @@ function setTrendChart(data) {
           { offset: 0, color: `${currentTrend.value.color}55` },
           { offset: 1, color: `${currentTrend.value.color}08` }
         ])
+      }
+    }],
+    graphic: [{
+      type: 'text',
+      left: 48,
+      top: 8,
+      style: {
+        text: '时间为UTC (Z结尾)，中国标准时间 = UTC+8',
+        fontSize: 12,
+        fill: '#94a3b8'
       }
     }]
   })

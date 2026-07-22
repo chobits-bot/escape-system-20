@@ -90,8 +90,8 @@ func handleMessage(ctx context.Context, payload []byte) {
 			continue
 		}
 
-		// 前端订阅的MAC格式是 ESP32_XX:XX:XX:XX:XX:XX
-		wsMac := "ESP32_" + mac
+		// MAC地址直接使用，不加前缀
+		wsMac := mac
 
 		// 0. 刷新传感器在线状态（数据上报即在线，TTL=90s 自动过期即离线）
 		g.Redis().Do(ctx, "SETEX", consts.SensorStatusKey(wsMac), 90, "1")
