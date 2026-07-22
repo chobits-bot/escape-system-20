@@ -31,7 +31,7 @@ services:
       - mysql_data:/var/lib/mysql
       - ./aiot/aiot-v2/manifest/deploy/sql/aiot.sql:/docker-entrypoint-initdb.d/01-aiot.sql
       - ./aiot/aiot-v2/manifest/deploy/sql/graph.sql:/docker-entrypoint-initdb.d/02-graph.sql
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci
+    command: --default-authentication-plugin=mysql_native_password
     restart: always
 
   # ==================== Redis ====================

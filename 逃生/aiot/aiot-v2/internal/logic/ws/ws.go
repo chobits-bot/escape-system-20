@@ -66,8 +66,10 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 
 // Push sends data to the websocket connection subscribed to the given mac.
 func Push(mac string, data interface{}) {
+	g.Log().Infof(context.Background(), "ws push attempt for mac=%s", mac)
 	v, ok := global.WsHub.Load(mac)
 	if !ok {
+		g.Log().Warningf(context.Background(), "ws push failed: no subscriber for mac=%s", mac)
 		return
 	}
 	if wsConn, ok := v.(*global.WsConn); ok {
